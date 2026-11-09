@@ -1,0 +1,13 @@
+# secrets and server-only files
+app/config.php
+# client data: spreadsheets and photos loaded at setup
+app/seed/
+# uploaded car photos
+public/uploads/cars/*
+!public/uploads/cars/.gitkeep
+# backups and local files
+*.bak-*
+*.zip
+.DS_Store
+Thumbs.db
+error_log
