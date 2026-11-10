@@ -61,7 +61,7 @@ return [
 /* ---------- sign in ---------- */
 'auth.me' => ['GET', function () {
     $u = current_user();
-    return ['user' => $u, 'csrf' => $_SESSION['csrf'], 'business' => setting('business_name', 'Car yard')];
+    return ['user' => $u, 'csrf' => $_SESSION['csrf'], 'business' => setting('business_name', 'Car yard'), 'location' => setting('location', '')];
 }],
 'auth.login' => ['POST', function ($in) {
     $u = do_login((string)($in['email'] ?? ''), (string)($in['password'] ?? ''));

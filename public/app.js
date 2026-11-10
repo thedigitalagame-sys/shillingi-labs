@@ -201,7 +201,7 @@ function navFor(){
 function currentView(){ const v = location.hash.replace(/^#\/?/, ''); const nav = navFor().map(n => n[0]); return nav.includes(v) ? v : nav[0]; }
 /* the client's word mark: first word white, the rest red, the town underneath */
 function brandHTML(){
-  const loc = (S() && S().settings.location) || '', name = App.business || 'Car yard';
+  const loc = (S() && S().settings.location) || App.location || '', name = App.business || 'Car yard';
   let main = name; if(loc && name.toLowerCase().endsWith(' ' + loc.toLowerCase())) main = name.slice(0, -loc.length - 1);
   const w = main.split(/\s+/);
   return `<div class="brand"><span class="brand-arc"></span><span class="brand-name"><b>${esc(w[0])}</b>${w.length > 1 ? `<em>${esc(w.slice(1).join(' '))}</em>` : ''}</span>${loc ? `<span class="brand-loc">${esc(loc)}</span>` : ''}</div>`;
@@ -896,7 +896,7 @@ const VIEWS = {dashboard:viewDashboard, stock:viewStock, create:viewCreate, logb
 /* ---------- start ---------- */
 (async () => {
   if(window.Chart){ Chart.defaults.font.family = 'Inter, system-ui, sans-serif'; Chart.defaults.font.size = 12; Chart.defaults.color = '#5E6A7D'; }
-  try { const m = await API.refresh(); App.business = m.business; if(m.user){ await loadState(); } }
+  try { const m = await API.refresh(); App.business = m.business; App.location = m.location || ''; if(m.user){ await loadState(); } }
   catch(e){ $('#app').innerHTML = `<div class="loading">${esc(e.message)} <a href="">Try again</a></div>`; return; }
   render();
 })();
