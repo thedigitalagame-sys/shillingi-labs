@@ -299,7 +299,7 @@ const opts = (list, cur, blank) => `${blank ? `<option value="">${blank}</option
 /* ================= CARS / INVENTORY ================= */
 function carPic(c){
   const p = c.photos[0];
-  return p ? `<img src="${esc(p.thumb)}" alt="${esc(carName(c))}" loading="lazy">${c.photos.length > 1 ? `<span class="nph">${c.photos.length} photos</span>` : ''}` : carSVG(c);
+  return p ? `<img src="${esc(p.thumb)}" alt="${esc(carName(c))}">${c.photos.length > 1 ? `<span class="nph">${c.photos.length} photos</span>` : ''}` : carSVG(c);
 }
 function carCard(c){
   const d = daysIn(c);
@@ -330,7 +330,7 @@ function viewStock(){
         <select id="fB" aria-label="Body type"><option value="all">All Body Types</option>${Object.entries(BODYNAME).map(([v, l]) => `<option value="${v}" ${ui.body === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
         <button class="btn" id="fR">${IC.reset} Reset</button></div>
       <div class="tbl-wrap"><table class="tbl inv cars-t"><thead><tr><th>#</th><th>Photo</th><th>Plate</th><th>Make &amp; Model</th><th>Year</th><th>Colour</th><th class="r">Mileage (km)</th><th>Source</th><th class="r">Asking Price (KES)</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-      ${shown.map((c, i) => `<tr class="click" data-car="${c.id}"><td class="muted">${(ui.page - 1) * PER + i + 1}</td><td><span class="thumb">${c.photos[0] ? `<img src="${esc(c.photos[0].thumb)}" alt="" loading="lazy">` : carSVG(c)}</span></td>
+      ${shown.map((c, i) => `<tr class="click" data-car="${c.id}"><td class="muted">${(ui.page - 1) * PER + i + 1}</td><td><span class="thumb">${c.photos[0] ? `<img src="${esc(c.photos[0].thumb)}" alt="">` : carSVG(c)}</span></td>
         <td><b class="nw">${esc(c.plate || '—')}</b></td><td>${esc([c.make, c.model].filter(Boolean).join(' '))}</td><td>${c.year || '—'}</td><td class="nw">${swatch(c)}</td><td class="r num">${c.mileage ? K(c.mileage) : '—'}</td>
         <td>${srcPill(c)}</td><td class="r num"><b>${c.ask ? K(c.ask) : '—'}</b></td><td>${statusPill(c)}</td><td>${act(c)}</td></tr>`).join('') || '<tr><td colspan="11" class="empty">No cars match.</td></tr>'}</tbody></table></div>
       ${pager(cars.length, ui.page, PER, 'pg', 'cars')}</div>`,
@@ -354,10 +354,12 @@ function viewStock(){
 function gallery(c){
   if(!c.photos.length) return `<div class="car-hero">${carSVG(c)}</div><div class="muted" style="font-size:12px">No photos yet.</div>`;
   return `<div class="gal"><div class="main"><img id="gImg" src="${esc(c.photos[0].url)}" alt="${esc(carName(c))}">${c.photos.length > 1 ? '<button class="nav-b l" id="gP" aria-label="Previous">‹</button><button class="nav-b r" id="gN" aria-label="Next">›</button>' : ''}<span class="cnt" id="gC">1 / ${c.photos.length}</span><button class="full-b" id="gFull" title="View full size">⤢ Full size</button></div>
-    <div class="thumbs">${c.photos.map((p, i) => `<button data-i="${i}" class="${i ? '' : 'on'}"><img src="${esc(p.thumb)}" alt="" loading="lazy"></button>`).join('')}</div></div>`;
+    <div class="thumbs">${c.photos.map((p, i) => `<button data-i="${i}" class="${i ? '' : 'on'}"><img src="${esc(p.thumb)}" alt=""></button>`).join('')}</div></div>`;
 }
 function bindGallery(bg, c){
-  let i = 0; const show = n => { if(!c.photos.length) return; i = (n + c.photos.length) % c.photos.length; $('#gImg', bg).src = c.photos[i].url; $('#gC', bg).textContent = `${i + 1} / ${c.photos.length}`; $$('.thumbs button', bg).forEach((b, k) => b.classList.toggle('on', k === i)); };
+  let i = 0; const main = $('.gal .main', bg), im = $('#gImg', bg);
+  if(im){ const done = () => main.classList.remove('loading'); im.onload = done; im.onerror = () => { done(); main.classList.add('failed'); }; if(!im.complete) main.classList.add('loading'); }
+  const show = n => { if(!c.photos.length) return; i = (n + c.photos.length) % c.photos.length; main.classList.remove('failed'); if(im.getAttribute('src') !== c.photos[i].url){ main.classList.add('loading'); im.src = c.photos[i].url; } $('#gC', bg).textContent = `${i + 1} / ${c.photos.length}`; $$('.thumbs button', bg).forEach((b, k) => b.classList.toggle('on', k === i)); };
   $$('.thumbs button', bg).forEach(b => b.onclick = () => show(+b.dataset.i));
   if($('#gImg', bg)) $('#gImg', bg).onclick = () => lightbox(c, i, n => show(n));
   if($('#gFull', bg)) $('#gFull', bg).onclick = () => lightbox(c, i, n => show(n));

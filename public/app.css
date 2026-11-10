@@ -511,3 +511,8 @@ select:focus,input:focus,textarea:focus{outline:2px solid #F6B7C1;border-color:v
 @media (max-width:860px){.lg-pow{padding:8px 12px}}
 .lg{background:radial-gradient(circle at 100% 100%,rgba(224,138,60,.5),rgba(224,138,60,0) 45%),linear-gradient(90deg,rgba(27,34,54,0) calc(118vh - 300px),#1B2236 calc(118vh - 2px)),url(assets/login-bg.jpg) left center/auto 100% no-repeat,#1B2236}
 @media (max-width:1100px),(max-aspect-ratio:5/4){.lg{background:url(assets/login-bg.jpg) 30% center/cover no-repeat,#1B2236}}
+/* photo loading state */
+.gal .main.loading::after{content:"Loading photo…";position:absolute;inset:auto 0 50% 0;text-align:center;color:#C9D2DF;font-size:13px}
+.gal .main.loading img{opacity:.35}
+.gal .main.failed::after{content:"This photo did not load. Tap ⤢ Full size or try again.";position:absolute;inset:auto 0 50% 0;text-align:center;color:#FCA5A5;font-size:13px}
+.thumbs img,.thumb img{background:linear-gradient(90deg,#E5EAF1,#F3F6FA,#E5EAF1)}
