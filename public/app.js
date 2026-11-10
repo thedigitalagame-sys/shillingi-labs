@@ -125,6 +125,9 @@ const IC = {
   plate:svg('<rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 12h3M15 12h3"/>'),
   office:svg('<path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/>'),
   chat:svg('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>'),
+  mail:svg('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>'),
+  lock:svg('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1"/>'),
+  eyeOff:svg('<path d="M17.9 17.9A10 10 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 4.1-5M9.9 5.2A9 9 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2M2 2l20 20"/>'),
   cam:svg('<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>')
 };
 const LOGO = `<span class="logo-mark brand-mark">${svg('<path d="M5 17h14M3 13l2-5a2 2 0 0 1 2-1.3h10A2 2 0 0 1 19 8l2 5v4a1 1 0 0 1-1 1h-1M4 18H3a1 1 0 0 1-1-1v-4"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>')}</span>`;
@@ -244,23 +247,20 @@ window.addEventListener('hashchange', () => { if(App.me){ render(); window.scrol
 
 /* ---------- sign in ---------- */
 function viewLogin(){
-  return `<div class="login"><section class="login-brand">
-      ${brandHTML()}
-      <h1>Stock, sales and instalments in one place.</h1>
-      <p>Every car with its photos and real cost, logbooks, deposits and sales, instalments and logbook loans.</p>
-      ${POWERED}
-    </section><section class="login-panel">
-      <h2>Sign in</h2>
-      <form class="login-form" id="lf"><label class="field">Email<input type="email" id="le" autocomplete="username" required></label>
-        <label class="field">Password<input type="password" id="lp" autocomplete="current-password" required></label>
-        <div class="err" id="lerr"></div><button class="btn primary">Sign in</button></form>
-      <p class="muted" style="font-size:12px;margin:0">Forgot your password? Ask the owner to set a new one under Staff.</p>
-    </section></div>`;
+  return `<div class="lg"><div class="lg-card"><div class="lg-logo">${brandHTML()}</div>
+      <h1>Login</h1><p class="lg-sub">Access the ${esc(App.business.replace(/\s+\S+$/, (m) => (App.location && m.trim().toLowerCase() === App.location.toLowerCase()) ? '' : m))} system</p>
+      <form id="lf" autocomplete="on"><label class="lg-in">${IC.mail}<input type="email" id="le" autocomplete="username" placeholder="Email" aria-label="Email" required></label>
+        <label class="lg-in">${IC.lock}<input type="password" id="lp" autocomplete="current-password" placeholder="Password" aria-label="Password" required><button type="button" class="lg-eye" id="lpEye" aria-label="Show password">${IC.eye}</button></label>
+        <div class="lg-row"><label class="lg-ck"><input type="checkbox" id="lr"> Remember me</label><a href="#" id="lgForgot">Forgot password?</a></div>
+        <div class="err" id="lerr"></div><button class="btn red lg-btn">Login</button></form></div>
+    <div class="lg-pow">${POWERED}</div></div>`;
 }
 function bindLogin(){
+  $('#lpEye').onclick = () => { const p = $('#lp'), show = p.type === 'password'; p.type = show ? 'text' : 'password'; $('#lpEye').innerHTML = show ? IC.eyeOff : IC.eye; $('#lpEye').setAttribute('aria-label', show ? 'Hide password' : 'Show password'); };
+  $('#lgForgot').onclick = e => { e.preventDefault(); $('#lerr').textContent = ''; modal('Forgot your password?', '<p style="margin:0">Ask the owner to set a new password for you under <b>Staff</b>. If you are the owner, contact Shilingi Labs Tech Solutions to reset it.</p>', [{label:'OK', cls:'primary'}]); };
   $('#lf').onsubmit = async e => {
-    e.preventDefault(); $('#lerr').textContent = ''; const b = $('#lf button'); b.disabled = true;
-    try { const r = await API.post('auth.login', {email:$('#le').value, password:$('#lp').value}); API.csrf = r.csrf; await loadState(); location.hash = '#/' + navFor()[0][0]; render(); }
+    e.preventDefault(); $('#lerr').textContent = ''; const b = $('#lf .lg-btn'); b.disabled = true;
+    try { const r = await API.post('auth.login', {email:$('#le').value, password:$('#lp').value, remember:$('#lr').checked}); API.csrf = r.csrf; await loadState(); location.hash = '#/' + navFor()[0][0]; render(); }
     catch(err){ $('#lerr').textContent = err.message; } finally { b.disabled = false; }
   };
 }

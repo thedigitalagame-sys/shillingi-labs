@@ -9,15 +9,26 @@ function is_https(): bool {
         || (($_SERVER['SERVER_PORT'] ?? '') == 443);
 }
 
+const REMEMBER_DAYS = 30;
 function start_session(): void {
+    // own folder, so the host's session clean-up does not sign people out early
+    $dir = APP_DIR . '/storage/sessions';
+    if (!is_dir($dir)) @mkdir($dir, 0700, true);
+    if (is_dir($dir) && is_writable($dir)) session_save_path($dir);
+    ini_set('session.gc_maxlifetime', (string)(REMEMBER_DAYS * 86400));
     session_name('GARI');
     session_set_cookie_params(['lifetime' => 0, 'path' => '/', 'secure' => is_https(), 'httponly' => true, 'samesite' => 'Strict']);
     ini_set('session.use_strict_mode', '1');
     session_start();
-    $idle = 8 * 3600;
+    $idle = !empty($_SESSION['remember']) ? REMEMBER_DAYS * 86400 : 8 * 3600;
     if (!empty($_SESSION['uid']) && time() - ($_SESSION['last'] ?? 0) > $idle) { $_SESSION = []; session_regenerate_id(true); }
     $_SESSION['last'] = time();
     if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(20));
+    if (!empty($_SESSION['remember'])) remember_cookie();
+}
+/** Keeps the sign-in cookie for 30 days (sliding) when "Remember me" was ticked. */
+function remember_cookie(): void {
+    setcookie(session_name(), session_id(), ['expires' => time() + REMEMBER_DAYS * 86400, 'path' => '/', 'secure' => is_https(), 'httponly' => true, 'samesite' => 'Strict']);
 }
 
 $GLOBALS['__user'] = false;
@@ -45,7 +56,7 @@ function check_csrf(): void {
     if ($h === '' || !hash_equals((string)($_SESSION['csrf'] ?? ''), $h)) fail('Your session has expired. Please reload the page.', 419);
 }
 
-function do_login(string $email, string $pass): array {
+function do_login(string $email, string $pass, bool $remember = false): array {
     $email = strtolower(trim($email));
     $ip = client_ip();
     $recent = (int)val('SELECT COUNT(*) FROM login_attempts WHERE success = 0 AND created_at > (NOW() - INTERVAL 15 MINUTE) AND (email = ? OR ip = ?)', [$email, $ip]);
@@ -57,6 +68,8 @@ function do_login(string $email, string $pass): array {
     if (password_needs_rehash($u['password_hash'], PASSWORD_DEFAULT)) update('users', ['password_hash' => password_hash($pass, PASSWORD_DEFAULT)], 'id = ?', [$u['id']]);
     session_regenerate_id(true);
     $_SESSION['uid'] = (int)$u['id'];
+    $_SESSION['remember'] = $remember ? 1 : 0;
+    if ($remember) remember_cookie();
     $_SESSION['csrf'] = bin2hex(random_bytes(20));
     $GLOBALS['__user'] = false;
     update('users', ['last_login' => date('Y-m-d H:i:s')], 'id = ?', [$u['id']]);

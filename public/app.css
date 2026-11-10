@@ -480,3 +480,34 @@ select:focus,input:focus,textarea:focus{outline:2px solid #F6B7C1;border-color:v
 @media (max-width:860px){.shell{background:var(--bg)}.panel-h{flex-wrap:wrap}.panel-h .right .btn{padding:6px 10px;font-size:12px}
   .tbl.inv.cars-t th:nth-child(5),.tbl.inv.cars-t td:nth-child(5),.tbl.inv.cars-t th:nth-child(6),.tbl.inv.cars-t td:nth-child(6),.tbl.inv.cars-t th:nth-child(7),.tbl.inv.cars-t td:nth-child(7),.tbl.inv.cars-t th:nth-child(8),.tbl.inv.cars-t td:nth-child(8),.tbl.inv.cars-t th:first-child,.tbl.inv.cars-t td:first-child{display:none}
   .thumb{width:64px;height:40px}}
+/* ---------- login (Driveline) ---------- */
+.lg{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:flex-end;padding:40px 6vw;
+  background:linear-gradient(90deg,rgba(10,18,32,0) 0%,rgba(10,18,32,0) 45%,rgba(10,18,32,.35) 100%),url(assets/login-bg.jpg) left center/cover no-repeat,#16202F}
+.lg-card{background:#fff;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.35);width:min(520px,100%);padding:40px 42px 42px;display:flex;flex-direction:column;gap:14px}
+.lg-logo{display:flex;justify-content:center;margin-bottom:6px}
+.lg-logo .brand-name b{color:#111827}.lg-logo .brand-name{font-size:38px}.lg-logo .brand-loc{color:#111827;font-size:15px}.lg-logo .brand-loc::before,.lg-logo .brand-loc::after{background:#111827;width:48px}
+.lg-logo .brand-arc{border-top-color:#0F1B2D;height:22px;top:-4px}
+.lg-card h1{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+.lg-sub{margin:-8px 0 6px;color:#374151;font-size:16px}
+#lf{display:flex;flex-direction:column;gap:16px}
+.lg-in{display:flex;align-items:center;gap:12px;border:1.5px solid #D5DBE4;border-radius:10px;padding:0 14px;height:56px;background:#fff}
+.lg-in:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.12)}
+.lg-in>svg{width:22px;height:22px;color:#111827;flex:none}
+.lg-in input{border:0!important;outline:0!important;box-shadow:none!important;flex:1;font-size:16px;padding:0;min-width:0;height:100%;background:transparent}
+.lg-eye{border:0;background:transparent;cursor:pointer;color:#111827;display:flex;padding:4px}.lg-eye svg{width:22px;height:22px}
+.lg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px}
+.lg-ck{display:flex;align-items:center;gap:10px;cursor:pointer}.lg-ck input{width:20px;height:20px;accent-color:var(--red)}
+.lg-row a{color:#1D4ED8}
+.lg-btn{height:54px;justify-content:center;font-size:19px;font-weight:700;border-radius:10px;margin-top:4px}
+.lg-pow{position:absolute;left:3vw;bottom:24px}
+.lg-pow .powered{border:0;padding:0 0 0 12px;border-left:3px solid var(--red);flex-direction:row;align-items:center;gap:12px;color:#fff;font-size:14px;font-weight:600}
+.lg-pow .powered img{width:42px;height:42px}.lg-pow .powered .sl b{font-size:19px}
+@media (max-width:860px){.lg{justify-content:center;padding:24px 14px 90px;background-position:30% center}.lg-card{padding:28px 22px}.lg-logo .brand-name{font-size:30px}.lg-card h1{font-size:28px}
+  .lg-pow{left:50%;transform:translateX(-50%);bottom:18px;white-space:nowrap}.lg-pow .powered{font-size:12px}}
+.lg{background:url(assets/login-bg.jpg) left center/auto 100% no-repeat,linear-gradient(120deg,#1C2B44 0%,#3B3550 45%,#B4553A 80%,#E08A3C 100%)}
+.lg-pow{background:rgba(10,18,32,.72);border-radius:12px;padding:10px 14px}
+.lg-pow .powered{display:flex!important}
+@media (max-width:1100px){.lg{background-size:cover}}
+@media (max-width:860px){.lg-pow{padding:8px 12px}}
+.lg{background:radial-gradient(circle at 100% 100%,rgba(224,138,60,.5),rgba(224,138,60,0) 45%),linear-gradient(90deg,rgba(27,34,54,0) calc(118vh - 300px),#1B2236 calc(118vh - 2px)),url(assets/login-bg.jpg) left center/auto 100% no-repeat,#1B2236}
+@media (max-width:1100px),(max-aspect-ratio:5/4){.lg{background:url(assets/login-bg.jpg) 30% center/cover no-repeat,#1B2236}}

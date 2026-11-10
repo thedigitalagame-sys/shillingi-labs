@@ -64,7 +64,7 @@ return [
     return ['user' => $u, 'csrf' => $_SESSION['csrf'], 'business' => setting('business_name', 'Car yard'), 'location' => setting('location', '')];
 }],
 'auth.login' => ['POST', function ($in) {
-    $u = do_login((string)($in['email'] ?? ''), (string)($in['password'] ?? ''));
+    $u = do_login((string)($in['email'] ?? ''), (string)($in['password'] ?? ''), !empty($in['remember']));
     return ['user' => $u, 'csrf' => $_SESSION['csrf']];
 }],
 'auth.logout' => ['POST', function () {
