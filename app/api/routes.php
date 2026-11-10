@@ -14,6 +14,28 @@ function plate_in(array $in): ?string {
     if (preg_match('/^([A-Z]{3})(\d{1,4})([A-Z]?)$/', $p, $m)) return "$m[1] $m[2]$m[3]";
     return mb_substr($p, 0, 20);
 }
+function engine_cc($v): ?int {      // "2.0L", "2.0", "1998", "1500cc" -> cc
+    $s = strtolower(trim((string)$v)); if ($s === '') return null;
+    if (!preg_match('/^(\d+(?:\.\d+)?)\s*(l|litres?|cc)?$/', $s, $m)) fail('Enter the engine as litres (e.g. 2.0L) or cc (e.g. 1998).');
+    $n = (float)$m[1]; $cc = ($m[2] ?? '') !== '' && $m[2] !== 'cc' || $n < 20 ? (int)round($n * 1000) : (int)round($n);
+    if ($cc < 500 || $cc > 9000) fail('Check the engine size.');
+    return $cc;
+}
+function logbook_in(array $in, array $old = []): array {
+    $st = (string)($in['logbook_status'] ?? '');
+    if ($st !== '' && !isset(LOGBOOK_STATUS[$st])) fail('Choose the logbook status.');
+    return ['logbook_status' => $st ?: null, 'logbook_no' => ($n = str_in($in, 'logbook_no', 40)) ? strtoupper($n) : null, 'logbook_date' => date_in($in, 'logbook_date', false),
+            'logbook_office' => str_in($in, 'logbook_office', 60), 'logbook_remarks' => str_in($in, 'logbook_remarks', 300),
+            'logbook' => $st === 'with_us' ? 'present' : ($st ? 'missing' : ($old['logbook'] ?? null))];
+}
+function logbook_logged(int $carId, array $old, array $new, int $uid): void {
+    if (($old['logbook_status'] ?? null) === $new['logbook_status'] && ($old['logbook_no'] ?? null) === $new['logbook_no'] && ($old['logbook_remarks'] ?? null) === $new['logbook_remarks']) return;
+    if (!$new['logbook_status']) return;
+    insert('car_logbook_log', ['car_id' => $carId, 'date' => $new['logbook_status'] === 'with_us' && $new['logbook_date'] ? $new['logbook_date'] : today(), 'status' => $new['logbook_status'],
+        'remarks' => $new['logbook_remarks'] ?? null, 'user_id' => $uid]);
+    audit('car_logbook', 'car', $carId, ['status' => $new['logbook_status'], 'no' => $new['logbook_no']]);
+}
+function logbook_dir(): string { return APP_DIR . '/storage/logbooks'; }
 function phone_ok(?string $p, string $label): ?string {
     if ($p === null || trim($p) === '') return null;
     if (!phone_e164($p)) fail("Enter a valid Kenyan $label, e.g. 0712 345 678.");
@@ -73,25 +95,33 @@ return [
     $floor = isset($in['floor']) && $in['floor'] !== '' ? money_in($in, 'floor') : null;
     if ($ask !== null && $floor !== null && $floor > $ask) fail('The lowest price cannot be above the asking price.');
     $insp = [];
-    foreach (['wheel_check', 'wheel_spanner', 'spare_wheel', 'battery', 'radio'] as $k) { $v = str_in($in['inspection'] ?? [], $k, 40); if ($v !== null) $insp[$k] = $v; }
+    foreach (INSPECTION_KEYS as $k) { $v = str_in($in['inspection'] ?? [], $k, 40); if ($v !== null) $insp[$k] = $v; }
+    if (!$id) {   // a new car needs the main details
+        foreach (['make' => 'the make', 'plate' => 'the plate', 'body' => 'the body type', 'year' => 'the year of manufacture', 'color' => 'the colour', 'fuel' => 'the fuel type', 'gearbox' => 'the gearbox',
+                  'ask' => 'the asking price', 'logbook_status' => 'the logbook status'] as $k => $l)
+            if (trim((string)($in[$k] ?? '')) === '') fail("Please fill in $l.");
+    }
     $plate = plate_in($in);
     if ($plate && val('SELECT id FROM cars WHERE plate = ? AND deleted_at IS NULL AND status <> "sold" AND id <> ?', [$plate, (int)$id])) fail("$plate is already in stock.");
     $data = ['plate' => $plate, 'make' => str_in($in, 'make', 40), 'model' => $model, 'body' => $body, 'year' => $year,
-        'mileage' => int_in($in, 'mileage', false), 'cc' => int_in($in, 'cc', false), 'fuel' => str_in($in, 'fuel', 20), 'gearbox' => str_in($in, 'gearbox', 20),
+        'mileage' => int_in($in, 'mileage', false), 'cc' => array_key_exists('engine', $in) ? engine_cc($in['engine']) : int_in($in, 'cc', false), 'fuel' => str_in($in, 'fuel', 20), 'gearbox' => str_in($in, 'gearbox', 20),
         'color' => str_in($in, 'color', 30), 'chassis' => str_in($in, 'chassis', 40), 'ask_price' => $ask, 'floor_price' => $floor,
         'buy_price' => isset($in['buy']) && $in['buy'] !== '' ? money_in($in, 'buy') : null,
         'source' => in_array($in['source'] ?? '', ['local', 'import', 'tradein'], true) ? $in['source'] : 'local',
         'in_date' => date_in($in, 'in_date', false) ?? today(), 'inspection' => $insp ? json_encode($insp) : null,
-        'logbook' => in_array($in['logbook'] ?? '', ['present', 'missing'], true) ? $in['logbook'] : null,
         'featured' => !empty($in['featured']) ? 1 : 0, 'notes' => str_in($in, 'notes', 2000)];
     if ($id) {
         $c = car_or_fail($id);
+        $lb = logbook_in($in, $c); $data += $lb;
         update('cars', $data + ['updated_at' => date('Y-m-d H:i:s')], 'id = ?', [$id]);
+        logbook_logged($id, $c, $lb, $u['id']);
         $changed = []; foreach (['ask_price', 'floor_price', 'buy_price', 'plate', 'model'] as $k) if ((string)$c[$k] !== (string)$data[$k]) $changed[$k] = [$c[$k], $data[$k]];
         audit('car_update', 'car', $id, $changed);
     } else {
         $data['status'] = !empty($in['ready']) ? 'available' : 'prep'; $data['created_by'] = $u['id'];
+        $lb = logbook_in($in); $data += $lb;
         $id = insert('cars', $data);
+        logbook_logged($id, [], $lb, $u['id']);
         audit('car_add', 'car', $id, ['plate' => $plate, 'model' => $model]);
     }
     return ['ok' => true, 'id' => $id];
@@ -113,6 +143,70 @@ return [
     audit('car_delete', 'car', (int)$c['id'], ['plate' => $c['plate'], 'reason' => str_in($in, 'reason', 200)]);
     return ['ok' => true];
 }],
+'cars.history' => ['GET', function ($in) {
+    require_user();
+    $c = car_or_fail(int_in($in, 'id'));
+    $sales = array_map('intval', array_column(rows('SELECT id FROM sales WHERE car_id = ?', [$c['id']]), 'id'));
+    $ev = rows('SELECT a.created_at, a.action, a.details, u.name FROM audit_log a LEFT JOIN users u ON u.id = a.user_id WHERE (a.entity = "car" AND a.entity_id = ?)'
+        . ($sales ? ' OR (a.entity = "sale" AND a.entity_id IN (' . implode(',', $sales) . '))' : '') . ' ORDER BY a.id', [$c['id']]);
+    $price = null; foreach ($ev as $e) if ($e['action'] === 'car_update' && strpos((string)$e['details'], 'ask_price') !== false) $price = substr($e['created_at'], 0, 10);
+    $res = null; $sold = null;
+    foreach ($ev as $e) { if ($e['action'] === 'car_reserved') $res = substr($e['created_at'], 0, 10); if ($e['action'] === 'car_sold') $sold = substr($e['created_at'], 0, 10); }
+    $s = row('SELECT date, reserved FROM sales WHERE car_id = ? AND voided_at IS NULL ORDER BY id DESC LIMIT 1', [$c['id']]);
+    if ($s && !$s['reserved'] && !$sold) $sold = $s['date'] ?: $c['sold_date'];
+    $lbIn = val('SELECT MIN(date) FROM car_logbook_log WHERE car_id = ? AND status = "with_us"', [$c['id']]);
+    return ['steps' => [['k' => 'added', 'date' => $c['in_date'] ?: substr($c['created_at'], 0, 10)], ['k' => 'logbook', 'date' => $c['logbook_date'] ?: $lbIn],
+        ['k' => 'price', 'date' => $price], ['k' => 'reserved', 'date' => $res], ['k' => 'sold', 'date' => $c['status'] === 'sold' ? ($sold ?: $c['sold_date']) : null]],
+        'events' => array_map(fn($e) => ['at' => $e['created_at'], 'action' => $e['action'], 'by' => $e['name']], array_slice(array_reverse($ev), 0, 30))];
+}],
+
+/* ---------- the car's own logbook ---------- */
+'logbooks.save' => ['POST', function ($in) {
+    $u = require_user('manager');
+    $c = car_or_fail(int_in($in, 'car_id'));
+    $lb = logbook_in($in, $c);
+    if (!$lb['logbook_status']) fail('Choose the logbook status.');
+    if ($lb['logbook_status'] === 'with_us' && !$lb['logbook_no']) fail('Enter the logbook number.');
+    update('cars', $lb + ['updated_at' => date('Y-m-d H:i:s')], 'id = ?', [$c['id']]);
+    logbook_logged((int)$c['id'], $c, $lb, $u['id']);
+    return ['ok' => true];
+}],
+'logbooks.history' => ['GET', function ($in) {
+    require_user('manager');
+    return rows('SELECT l.date, l.status, l.remarks, u.name FROM car_logbook_log l LEFT JOIN users u ON u.id = l.user_id WHERE l.car_id = ? ORDER BY l.date DESC, l.id DESC', [int_in($in, 'car_id')]);
+}],
+'logbooks.upload' => ['POST', function ($in) {
+    $u = require_user('manager');
+    $c = car_or_fail(int_in($in, 'car_id'));
+    $f = $_FILES['file'] ?? null;
+    if (!$f || $f['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($f['tmp_name'])) fail('Choose the logbook scan or photo.');
+    if ($f['size'] > 5 * 1024 * 1024) fail('The file is over 5 MB.');
+    $bin = file_get_contents($f['tmp_name']);
+    $dir = logbook_dir(); if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) fail('Could not create the logbook folder on the server.');
+    $name = 'lb' . $c['id'] . '-' . bin2hex(random_bytes(8));
+    if (str_starts_with($bin, '%PDF-')) { $name .= '.pdf'; if (!move_uploaded_file($f['tmp_name'], "$dir/$name")) fail('Could not save the file.'); }
+    else {
+        $info = @getimagesizefromstring($bin);
+        if (!$info || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG], true)) fail('The logbook must be a PDF, JPG or PNG.');
+        $img = @imagecreatefromstring($bin); if (!$img) fail('That image could not be read.');
+        $name .= '.jpg'; resize_save($img, 2200, "$dir/$name", 85); imagedestroy($img);   // re-encoded: no hidden data
+    }
+    if ($c['logbook_file'] && is_file("$dir/" . basename($c['logbook_file']))) @unlink("$dir/" . basename($c['logbook_file']));
+    update('cars', ['logbook_file' => $name], 'id = ?', [$c['id']]);
+    audit('logbook_scan', 'car', (int)$c['id']);
+    return ['ok' => true];
+}],
+'logbooks.file' => ['GET', function ($in) {
+    require_user('manager');
+    $c = car_or_fail(int_in($in, 'car_id'));
+    $p = logbook_dir() . '/' . basename((string)$c['logbook_file']);
+    if (!$c['logbook_file'] || !is_file($p)) fail('No logbook scan for this car.', 404);
+    header('Content-Type: ' . (str_ends_with($p, '.pdf') ? 'application/pdf' : 'image/jpeg'));
+    header('Content-Disposition: inline; filename="logbook-' . preg_replace('/[^A-Za-z0-9]/', '', (string)$c['plate']) . (str_ends_with($p, '.pdf') ? '.pdf' : '.jpg') . '"');
+    header('Content-Length: ' . filesize($p)); header('Cache-Control: private, no-store');
+    readfile($p); exit;
+}],
+
 'costs.add' => ['POST', function ($in) {
     $u = require_user('manager');
     $c = car_or_fail(int_in($in, 'car_id'));

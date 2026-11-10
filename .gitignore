@@ -11,3 +11,5 @@ public/uploads/cars/*
 .DS_Store
 Thumbs.db
 error_log
+# logbook scans (private client documents)
+app/storage/

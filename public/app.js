@@ -54,7 +54,7 @@ const API = {
 /* ---------- modal ---------- */
 function modal(title, body, actions = [], wide){
   const bg = document.createElement('div'); bg.className = 'modal-bg';
-  bg.innerHTML = `<div class="modal ${wide ? 'wide' : ''}" role="dialog" aria-modal="true"><div class="modal-h"><h3>${title}</h3><button type="button" aria-label="Close" data-x>&times;</button></div><div class="modal-b">${body}<div class="err" data-err></div></div><div class="modal-f"></div></div>`;
+  bg.innerHTML = `<div class="modal ${wide ? (wide === 'xwide' ? 'wide xwide' : 'wide') : ''}" role="dialog" aria-modal="true"><div class="modal-h"><h3>${title}</h3><button type="button" aria-label="Close" data-x>&times;</button></div><div class="modal-b">${body}<div class="err" data-err></div></div><div class="modal-f"></div></div>`;
   const f = $('.modal-f', bg), close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
   const onKey = e => { if(e.key === 'Escape' && document.body.lastElementChild === bg) close(); };
   bg._close = close;
@@ -96,6 +96,35 @@ const IC = {
   list:svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),
   dl:svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/>'), plus:svg('<path d="M12 5v14M5 12h14"/>'),
   print:svg('<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/>'),
+  home:svg('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'),
+  plusSq:svg('<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>'),
+  book:svg('<path d="M2 5c3-1.5 7-1.5 10 1 3-2.5 7-2.5 10-1v14c-3-1.5-7-1.5-10 1-3-2.5-7-2.5-10-1z"/><path d="M12 6v14"/>'),
+  bell:svg('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
+  eye:svg('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+  edit:svg('<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>'),
+  copy:svg('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>'),
+  trash:svg('<path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/>'),
+  search:svg('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'),
+  reset:svg('<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>'),
+  hand:svg('<path d="M11 17l2 2a1 1 0 1 0 3-3"/><path d="M14 14l2.5 2.5a1 1 0 1 0 3-3l-3.9-3.9a3 3 0 0 0-4.2 0l-.9.9a1 1 0 1 1-3-3l2.8-2.8a5 5 0 0 1 6.1-.7l.5.3a4 4 0 0 0 2 .5H21"/><path d="M21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/>'),
+  tag:svg('<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.5"/>'),
+  tools:svg('<path d="M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L2 10l8-8z"/>'),
+  check:svg('<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>'),
+  cal:svg('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>'),
+  palette:svg('<circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2c0-.5-.2-1-.5-1.3a1.7 1.7 0 0 1 1.3-2.7H17a5 5 0 0 0 5-5c0-5-4.5-9-10-9z"/>'),
+  fuel:svg('<path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18M2 22h14M3 10h12M15 13h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-4-4"/>'),
+  engine:svg('<path d="M4 9h2V7h4V5h4v2h3l2 3h2v6h-2l-2 3h-6l-2-2H6v-3H4z"/>'),
+  barcode:svg('<path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/>'),
+  layers:svg('<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>'),
+  gauge:svg('<path d="M12 14l4-4"/><path d="M3.3 19a10 10 0 1 1 17.4 0"/>'),
+  swap:svg('<path d="M17 3l4 4-4 4M3 7h18M7 21l-4-4 4-4M21 17H3"/>'),
+  clip:svg('<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M9 12l2 2 4-4"/>'),
+  clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  upload:svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/>'),
+  save:svg('<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>'),
+  plate:svg('<rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 12h3M15 12h3"/>'),
+  office:svg('<path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/>'),
+  chat:svg('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>'),
   cam:svg('<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>')
 };
 const LOGO = `<span class="logo-mark brand-mark">${svg('<path d="M5 17h14M3 13l2-5a2 2 0 0 1 2-1.3h10A2 2 0 0 1 19 8l2 5v4a1 1 0 0 1-1 1h-1M4 18H3a1 1 0 0 1-1-1v-4"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>')}</span>`;
@@ -124,7 +153,7 @@ function carSVG(c){
 
 /* ---------- state ---------- */
 const App = {me:null, S:null, business:'Car yard'};
-const ui = {status:'stock', body:'all', q:'', sort:'new', month:'', salesQ:'', salesType:'all', loanTab:'active', creditTab:'open'};
+const ui = {status:'all', make:'all', page:1, lbSt:'all', lbQ:'', lbPage:1, lbCar:null, form:null, body:'all', q:'', sort:'new', month:'', salesQ:'', salesType:'all', loanTab:'active', creditTab:'open'};
 let charts = [];
 const S = () => App.S;
 const isMgr = () => App.me && ['owner', 'manager'].includes(App.me.role);
@@ -139,7 +168,7 @@ const carCost = c => num(c.buy) + sum((c.costs || []).map(x => x.amount));
 const daysIn = c => daysBetween(c.in_date || App.S.today, c.sold_date || App.S.today);
 const stockCars = () => S().cars.filter(c => c.status !== 'sold');
 const METHOD = () => S().pay_methods;
-const STATUS = {available:['Available','good'], reserved:['Reserved','warn'], prep:['Preparing','info'], sold:['Sold','gray']};
+const STATUS = {available:['Available','good'], reserved:['Reserved','warn'], prep:['In Service','purple'], sold:['Sold','gray']};
 const statusPill = c => `<span class="pill ${STATUS[c.status][1]}">${STATUS[c.status][0]}</span>`;
 const plateHTML = c => c.plate ? `<span class="plate">${esc(c.plate)}</span>` : '<span class="plate new">No plate</span>';
 const DEAL = {cash:'Cash', credit:'Credit (instalments)', bank:'Bank finance'};
@@ -153,34 +182,58 @@ const credOpen = s => s.type === 'credit' && !s.reserved && (s.balance_known ===
 async function loadState(){ App.S = await API.get('state'); App.me = App.S.me; App.business = App.S.settings.business_name; }
 async function refresh(msg){ await loadState(); render(); if(msg) toast(msg); }
 
-/* ---------- navigation ---------- */
+/* ---------- navigation & layout ---------- */
 function navFor(){
   const S_ = S(), arrears = S_.sales.filter(s => s.sched && s.sched.arrears > 0).length;
   const lbPending = S_.sales.filter(s => !s.reserved && s.logbook !== 'transferred' && s.logbook !== 'held' && !s.legacy).length;
   const n = [];
-  if(isMgr()) n.push(['dashboard', 'Dashboard', IC.dash]);
-  n.push(['stock', 'Stock', IC.car, stockCars().filter(c => daysIn(c) > 60).length]);
-  n.push(['sales', 'Sales & payments', IC.cash]);
+  if(isMgr()) n.push(['dashboard', 'Dashboard', IC.home]);
+  n.push(['stock', 'Cars / Inventory', IC.car]);
+  if(isMgr()) n.push(['create', 'Create Car', IC.plusSq], ['logbookmgmt', 'Logbook Management', IC.book, stockCars().filter(c => c.logbook_status === 'not_received').length]);
+  n.push(['sales', 'Sales', IC.cash]);
   n.push(['credit', 'Instalments', IC.wallet, arrears]);
-  if(isMgr()) n.push(['loans', 'Logbook loans', IC.key, (S_.loans || []).filter(l => l.overdue).length]);
-  n.push(['logbooks', 'Logbooks', IC.doc, lbPending]);
-  if(isMgr()) n.push(['reports', 'Reports & expenses', IC.chart]);
+  if(isMgr()) n.push(['loans', 'Logbook Loans', IC.key, (S_.loans || []).filter(l => l.overdue).length]);
+  n.push(['logbooks', 'Logbook Transfers', IC.doc, lbPending]);
+  if(isMgr()) n.push(['reports', 'Reports', IC.chart]);
   if(isOwner()) n.push(['staff', 'Staff', IC.people], ['settings', 'Settings', IC.cog], ['activity', 'Activity', IC.list]);
   return n;
 }
 function currentView(){ const v = location.hash.replace(/^#\/?/, ''); const nav = navFor().map(n => n[0]); return nav.includes(v) ? v : nav[0]; }
+/* the client's word mark: first word white, the rest red, the town underneath */
+function brandHTML(){
+  const loc = (S() && S().settings.location) || '', name = App.business || 'Car yard';
+  let main = name; if(loc && name.toLowerCase().endsWith(' ' + loc.toLowerCase())) main = name.slice(0, -loc.length - 1);
+  const w = main.split(/\s+/);
+  return `<div class="brand"><span class="brand-arc"></span><span class="brand-name"><b>${esc(w[0])}</b>${w.length > 1 ? `<em>${esc(w.slice(1).join(' '))}</em>` : ''}</span>${loc ? `<span class="brand-loc">${esc(loc)}</span>` : ''}</div>`;
+}
+const POWERED = `<a class="powered" href="https://shilingilabs.co.ke" target="_blank" rel="noopener"><span>Powered &amp; Developed by</span><span class="sl"><img src="assets/logo-icon.png" alt=""><span><b>SHILINGI<i>LABS</i></b><small>TECH SOLUTIONS</small></span></span></a>`;
+function alertsList(){
+  const S_ = S(), a = [], late = S_.sales.filter(s => s.sched && s.sched.arrears > 0), lo = (S_.loans || []).filter(l => l.overdue);
+  const lbMissing = stockCars().filter(c => c.logbook_status === 'not_received'), exp = S_.sales.filter(s => s.reserved && s.hold_until && s.hold_until < S_.today);
+  if(late.length) a.push(['credit', `${pl(late.length, 'buyer')} behind on instalments`]);
+  if(lo.length) a.push(['loans', `${pl(lo.length, 'logbook loan')} past due`]);
+  if(exp.length) a.push(['sales', `${pl(exp.length, 'reservation')} past the hold date`]);
+  if(isMgr() && lbMissing.length) a.push(['logbookmgmt', `${pl(lbMissing.length, 'car')} in the yard without the logbook`]);
+  return a;
+}
 function render(){
   charts.forEach(c => c.destroy()); charts = [];
   document.title = App.business;
   const app = $('#app');
   if(!App.me){ app.innerHTML = viewLogin(); bindLogin(); return; }
-  const view = currentView(), V = VIEWS[view]();
-  app.innerHTML = `<div class="layout">
-    <aside class="side"><div class="logo">${LOGO}<div class="logo-text">${esc(App.business)}<small>${esc(S().settings.location && !App.business.toLowerCase().includes(S().settings.location.toLowerCase()) ? S().settings.location : 'Car yard system')}</small></div></div>
-      <nav class="nav">${navFor().map(([k, l, ic, cnt]) => `<a href="#/${k}" class="${k === view ? 'on' : ''}">${ic}<span>${l}</span>${cnt ? `<span class="cnt">${cnt}</span>` : ''}</a>`).join('')}</nav>
-      <div class="side-user"><div class="avatar">${initials(App.me.name)}</div><div class="who"><b>${esc(App.me.name)}</b>${{owner:'Owner', manager:'Manager', sales:'Sales'}[App.me.role]} · <a href="#" id="chpw" style="color:#C9D5E8">password</a></div><button id="logout">Sign out</button></div><div class="side-by">${BYLINE}</div></aside>
-    <main class="main"><header class="topbar"><div><h1>${V.title}</h1><div class="sub">${V.sub || ''}</div></div><div class="tools">${V.tools || ''}</div></header><div class="content">${V.html}</div></main></div>`;
-  $('#logout').onclick = async () => { try { const r = await API.post('auth.logout'); API.csrf = r.csrf; } catch(e){} App.me = null; App.S = null; history.replaceState(null, '', location.pathname); render(); };
+  const view = currentView(), V = VIEWS[view](), nav = navFor(), cur = nav.find(n => n[0] === view), al = alertsList();
+  app.innerHTML = `<div class="shell">
+    <header class="hdr"><a href="#/${nav[0][0]}" class="hdr-brand">${brandHTML()}</a><span class="hdr-sep"></span>
+      <div class="hdr-title"><span class="hdr-ic">${(cur && cur[2]) || IC.car}</span><div><h1>${V.title}</h1><div class="sub">${V.sub || ''}</div></div></div>
+      <div class="hdr-tools"><div class="dd"><button class="bell" id="bell" aria-label="Alerts">${IC.bell}${al.length ? `<i>${al.length}</i>` : ''}</button>
+          <div class="dd-menu" id="bellM" hidden>${al.length ? al.map(([k, t]) => `<a href="#/${k}">${t}</a>`).join('') : '<span class="muted">Nothing needs attention.</span>'}</div></div>
+        <div class="dd"><button class="me" id="meB"><span class="avatar">${initials(App.me.name)}</span><span class="me-n">${esc(App.me.name.split(' ')[0])}</span> ▾</button>
+          <div class="dd-menu" id="meM" hidden><div class="me-h"><b>${esc(App.me.name)}</b><span>${{owner:'Owner', manager:'Manager', sales:'Sales'}[App.me.role]}</span></div><a href="#" id="chpw">Change password</a><a href="#" id="logout">Sign out</a></div></div></div></header>
+    <aside class="side"><nav class="nav">${nav.map(([k, l, ic, cnt]) => `<a href="#/${k}" class="${k === view ? 'on' : ''}">${ic}<span>${l}</span>${cnt ? `<span class="cnt">${cnt}</span>` : ''}</a>`).join('')}</nav>${POWERED}</aside>
+    <main class="main"><div class="content">${V.tools ? `<div class="toolbar">${V.tools}</div>` : ''}${V.html}</div></main></div>`;
+  const dd = (b, m) => { $(b).onclick = e => { e.stopPropagation(); const h = $(m).hidden; $$('.dd-menu').forEach(x => x.hidden = true); $(m).hidden = !h; }; };
+  dd('#bell', '#bellM'); dd('#meB', '#meM'); document.onclick = () => $$('.dd-menu').forEach(x => x.hidden = true);
+  $('#logout').onclick = async e => { e.preventDefault(); try { const r = await API.post('auth.logout'); API.csrf = r.csrf; } catch(err){} App.me = null; App.S = null; history.replaceState(null, '', location.pathname); render(); };
   $('#chpw').onclick = e => { e.preventDefault(); passwordModal(); };
   $$('[data-car]').forEach(b => b.onclick = e => { e.stopPropagation(); carModal(car(b.dataset.car)); });
   $$('[data-sale]').forEach(b => b.onclick = e => { e.stopPropagation(); saleModal(sale(b.dataset.sale)); });
@@ -192,16 +245,16 @@ window.addEventListener('hashchange', () => { if(App.me){ render(); window.scrol
 /* ---------- sign in ---------- */
 function viewLogin(){
   return `<div class="login"><section class="login-brand">
-      <div class="logo">${LOGO}<div class="logo-text">${esc(App.business)}<small>Car yard system</small></div></div>
+      ${brandHTML()}
       <h1>Stock, sales and instalments in one place.</h1>
-      <p>Every car with its photos and real cost, deposits and sales, instalments, logbook loans and transfers.</p>
+      <p>Every car with its photos and real cost, logbooks, deposits and sales, instalments and logbook loans.</p>
+      ${POWERED}
     </section><section class="login-panel">
       <h2>Sign in</h2>
       <form class="login-form" id="lf"><label class="field">Email<input type="email" id="le" autocomplete="username" required></label>
         <label class="field">Password<input type="password" id="lp" autocomplete="current-password" required></label>
         <div class="err" id="lerr"></div><button class="btn primary">Sign in</button></form>
       <p class="muted" style="font-size:12px;margin:0">Forgot your password? Ask the owner to set a new one under Staff.</p>
-      <p class="muted" style="font-size:12px;margin:8px 0 0">${BYLINE}</p>
     </section></div>`;
 }
 function bindLogin(){
@@ -216,7 +269,34 @@ function passwordModal(){
     [{label:'Cancel'}, {label:'Change password', cls:'primary', fn:async bg => { await API.post('auth.password', {current:fv(bg, 'pc'), new:fv(bg, 'pn')}); toast('Password changed'); }}]);
 }
 
-/* ================= STOCK ================= */
+/* ---------- shared bits ---------- */
+const tile = (cls, ic, label, val, sub) => `<div class="tile ${cls}"><span class="tile-ic">${ic}</span><div><span class="tile-l">${label}</span><b class="tile-v num">${val}</b>${sub ? `<span class="tile-s">${sub}</span>` : ''}</div></div>`;
+const panelH = (ic, title, right = '') => `<div class="panel-h">${ic}<h2>${title}</h2>${right ? `<div class="right">${right}</div>` : ''}</div>`;
+function pager(total, page, per, key, noun){
+  const pages = Math.max(1, Math.ceil(total / per)); page = Math.min(page, pages);
+  if(total <= per) return total ? `<div class="pager"><span class="muted">Showing ${total} ${noun}</span></div>` : '';
+  const nums = []; for(let p = 1; p <= pages; p++) if(p === 1 || p === pages || Math.abs(p - page) <= 1) nums.push(p); else if(nums[nums.length - 1] !== '…') nums.push('…');
+  return `<div class="pager"><span class="muted">Showing ${(page - 1) * per + 1} – ${Math.min(total, page * per)} of ${total} ${noun}</span><div class="pg">
+    <button data-${key}="${page - 1}" ${page === 1 ? 'disabled' : ''} aria-label="Previous">‹</button>${nums.map(p => p === '…' ? '<span>…</span>' : `<button data-${key}="${p}" class="${p === page ? 'on' : ''}">${p}</button>`).join('')}<button data-${key}="${page + 1}" ${page === pages ? 'disabled' : ''} aria-label="Next">›</button></div></div>`;
+}
+const SOURCE = {local:['Locally used', 'src-l'], import:['Fresh import', 'src-i'], tradein:['Trade-in', 'src-t']};
+const srcPill = c => `<span class="pill ${(SOURCE[c.source] || SOURCE.local)[1]}">${(SOURCE[c.source] || SOURCE.local)[0]}</span>`;
+const LBS = {with_us:['With Us', 'good'], not_received:['Not Yet Received', 'warn'], in_process:['In Process', 'info']};
+const lbPill = st => st && LBS[st] ? `<span class="pill ${LBS[st][1]}">${LBS[st][0]}</span>` : '<span class="muted">—</span>';
+const swatch = c => c.color ? `<span class="sw" style="background:${hexOf(c.color)}"></span>${esc(c.color)}` : '<span class="muted">—</span>';
+const engineTxt = c => c.cc ? `${(c.cc / 1000).toFixed(1)}L` : null;
+const MAKES = ['Toyota', 'Nissan', 'Mazda', 'Honda', 'Subaru', 'Mitsubishi', 'Isuzu', 'Suzuki', 'Mercedes-Benz', 'BMW', 'Volkswagen', 'Audi', 'Lexus', 'Land Rover', 'Ford', 'Hyundai', 'Kia', 'Peugeot', 'Volvo', 'Jeep', 'Daihatsu', 'Other'];
+const COLOURS = ['White', 'Pearl White', 'Silver', 'Grey', 'Black', 'Blue', 'Dark Blue', 'Red', 'Wine Red', 'Maroon', 'Green', 'Champagne', 'Gold', 'Brown', 'Beige', 'Orange', 'Yellow', 'Other'];
+const OFFICES = ['NTSA Eldoret', 'NTSA Nairobi', 'NTSA Mombasa', 'NTSA Kisumu', 'NTSA Nakuru', 'NTSA Thika', 'eCitizen (digital logbook)', 'Other'];
+const YESNO = ['Available', 'Not available'];
+const CHECKS = [['wheel_check', 'Wheel Check', YESNO], ['wheel_spanner', 'Wheel Spanner', YESNO], ['spare_wheel', 'Spare Wheel', YESNO], ['additional_spare', 'Additional Spare Wheel', YESNO],
+  ['battery', 'Battery', ['Good', 'Fair', 'Weak', 'Faulty', 'None']], ['radio', 'Radio', ['Normal', 'Screen', 'Double Screen', 'System', 'Faulty', 'None']]];
+const checkCls = v => /^(available|good|screen|double screen|system)$/i.test(v) ? 'good' : /^normal$/i.test(v) ? 'info' : /^(fair|weak)$/i.test(v) ? 'warn' : /^(not available|faulty|none)$/i.test(v) ? 'bad' : 'gray';
+const checkTxt = v => /^\d+$/.test(v) ? `${v} (sheet code)` : v;
+/* a select that keeps a value from the old sheet that isn't in the list */
+const opts = (list, cur, blank) => `${blank ? `<option value="">${blank}</option>` : ''}${cur && !list.some(x => (Array.isArray(x) ? x[0] : x) === cur) ? `<option value="${esc(cur)}" selected>${esc(checkTxt(cur))}</option>` : ''}${list.map(x => { const [v, l] = Array.isArray(x) ? x : [x, x]; return `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}`;
+
+/* ================= CARS / INVENTORY ================= */
 function carPic(c){
   const p = c.photos[0];
   return p ? `<img src="${esc(p.thumb)}" alt="${esc(carName(c))}" loading="lazy">${c.photos.length > 1 ? `<span class="nph">${c.photos.length} photos</span>` : ''}` : carSVG(c);
@@ -225,32 +305,49 @@ function carCard(c){
   const d = daysIn(c);
   return `<button class="carc" data-car="${c.id}"><div class="pic">${carPic(c)}${statusPill(c)}${c.status !== 'sold' ? `<span class="age ${d > 60 ? 'old' : ''}">${d} days in yard</span>` : ''}</div>
     <div class="bd"><span class="ttl">${esc(carName(c))}</span>
-      <span class="spec">${[c.mileage ? K(c.mileage) + ' km' : '', c.cc ? c.cc + ' cc' : '', c.fuel, c.gearbox, c.color].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('')}</span>
+      <span class="spec">${[c.mileage ? K(c.mileage) + ' km' : '', engineTxt(c), c.fuel, c.gearbox, c.color].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('')}</span>
       <span>${plateHTML(c)}</span>
       <div class="pr"><b class="num">${c.ask ? KES(c.ask) : '<span class="muted" style="font-size:13px">No price yet</span>'}</b><span>${isMgr() && c.buy ? `profit ${short(num(c.ask) - carCost(c))}` : c.floor && !isMgr() ? `lowest ${short(c.floor)}` : ''}</span></div></div></button>`;
 }
+const makeOf = c => c.make || 'Other';
 function viewStock(){
-  let cars = S().cars.filter(c => ui.status === 'all' ? true : ui.status === 'stock' ? c.status !== 'sold' : c.status === ui.status);
+  const all = S().cars, m = S().today.slice(0, 7), PER = 10;
+  let cars = all.filter(c => ui.status === 'all' ? true : ui.status === 'stock' ? c.status !== 'sold' : c.status === ui.status);
+  if(ui.make !== 'all') cars = cars.filter(c => makeOf(c) === ui.make);
   if(ui.body !== 'all') cars = cars.filter(c => c.body === ui.body);
-  if(ui.q){ const q = ui.q.toLowerCase().replace(/\s/g, ''); cars = cars.filter(c => (carName(c) + (c.plate || '') + (c.color || '')).toLowerCase().replace(/\s/g, '').includes(q)); }
-  const sorts = {new:(a, b) => (b.in_date || '').localeCompare(a.in_date || '') || b.id - a.id, old:(a, b) => daysIn(b) - daysIn(a), cheap:(a, b) => num(a.ask) - num(b.ask), dear:(a, b) => num(b.ask) - num(a.ask)};
-  cars.sort(sorts[ui.sort]);
-  const stock = stockCars();
-  return {title:'Stock', sub:`${pl(stock.length, 'car')} in the yard · ${KES(sum(stock.map(c => c.ask)))} at asking prices`,
-    tools:`${isMgr() ? `<button class="btn primary" id="addCar">${IC.plus} Add a car</button><button class="btn" id="csvStock">${IC.dl} Export</button>` : ''}`,
-    html:`<div class="filters"><label class="field">Show<select id="fS">${[['stock', 'In the yard'], ['available', 'Available'], ['reserved', 'Reserved'], ['prep', 'Preparing'], ['sold', 'Sold'], ['all', 'All cars']].map(([v, l]) => `<option value="${v}" ${ui.status === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-      <label class="field">Body<select id="fB"><option value="all">All</option>${Object.entries(BODYNAME).map(([v, l]) => `<option value="${v}" ${ui.body === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-      <label class="field">Sort<select id="fO">${[['new', 'Newest in'], ['old', 'Longest in yard'], ['cheap', 'Price: low to high'], ['dear', 'Price: high to low']].map(([v, l]) => `<option value="${v}" ${ui.sort === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-      <label class="field" style="flex:1;min-width:180px">Search<input type="search" id="fQ" value="${esc(ui.q)}" placeholder="Model, plate or colour"></label></div>
-      ${cars.length ? `<div class="cars">${cars.map(carCard).join('')}</div>` : '<div class="card empty">No cars match.</div>'}`,
+  if(ui.q){ const q = ui.q.toLowerCase().replace(/\s/g, ''); cars = cars.filter(c => (carName(c) + (c.plate || '') + (c.color || '') + (c.chassis || '')).toLowerCase().replace(/\s/g, '').includes(q)); }
+  cars.sort((a, b) => (b.in_date || '').localeCompare(a.in_date || '') || b.id - a.id);
+  const pages = Math.max(1, Math.ceil(cars.length / PER)); if(ui.page > pages) ui.page = pages;
+  const shown = cars.slice((ui.page - 1) * PER, ui.page * PER), makes = [...new Set(all.map(makeOf))].sort();
+  const act = (c) => `<div class="acts"><button class="ia" data-car="${c.id}" title="View">${IC.eye}</button>${isMgr() ? `<button class="ia" data-edit="${c.id}" title="Edit">${IC.edit}</button><button class="ia" data-dup="${c.id}" title="Duplicate">${IC.copy}</button>` : ''}${isOwner() && c.status !== 'sold' && !saleOf(c.id) ? `<button class="ia del" data-del="${c.id}" title="Remove">${IC.trash}</button>` : ''}</div>`;
+  return {title:'Cars / Inventory', sub:'Manage your vehicle stock, pricing and status',
+    html:`<div class="tiles t5">${tile('t-red', IC.car, 'Total Cars', all.length, `${stockCars().length} in the yard`)}${tile('t-green', IC.car, 'Available', all.filter(c => c.status === 'available').length)}
+      ${tile('t-amber', IC.hand, 'Reserved', all.filter(c => c.status === 'reserved').length)}${tile('t-blue', IC.tag, 'Sold (This Month)', S().sales.filter(s => !s.reserved && (s.date || '').startsWith(m)).length)}${tile('t-purple', IC.tools, 'In Service', all.filter(c => c.status === 'prep').length)}</div>
+    <div class="panel">${panelH(IC.car, 'Cars / Inventory', `${isMgr() ? `<button class="btn ghost-w" id="csvStock">${IC.dl} Export</button><a class="btn red-w" href="#/create" id="addCar">${IC.plus} Add New Car</a>` : ''}`)}
+      <div class="filters fl-inv"><label class="search">${IC.search}<input type="search" id="fQ" value="${esc(ui.q)}" placeholder="Search by plate, make, model or chassis no."></label>
+        <select id="fS" aria-label="Status">${[['all', 'All Status'], ['stock', 'In the yard'], ['available', 'Available'], ['reserved', 'Reserved'], ['prep', 'In Service'], ['sold', 'Sold']].map(([v, l]) => `<option value="${v}" ${ui.status === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <select id="fM" aria-label="Make"><option value="all">All Makes</option>${makes.map(x => `<option ${ui.make === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select>
+        <select id="fB" aria-label="Body type"><option value="all">All Body Types</option>${Object.entries(BODYNAME).map(([v, l]) => `<option value="${v}" ${ui.body === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <button class="btn" id="fR">${IC.reset} Reset</button></div>
+      <div class="tbl-wrap"><table class="tbl inv cars-t"><thead><tr><th>#</th><th>Photo</th><th>Plate</th><th>Make &amp; Model</th><th>Year</th><th>Colour</th><th class="r">Mileage (km)</th><th>Source</th><th class="r">Asking Price (KES)</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      ${shown.map((c, i) => `<tr class="click" data-car="${c.id}"><td class="muted">${(ui.page - 1) * PER + i + 1}</td><td><span class="thumb">${c.photos[0] ? `<img src="${esc(c.photos[0].thumb)}" alt="" loading="lazy">` : carSVG(c)}</span></td>
+        <td><b class="nw">${esc(c.plate || '—')}</b></td><td>${esc([c.make, c.model].filter(Boolean).join(' '))}</td><td>${c.year || '—'}</td><td class="nw">${swatch(c)}</td><td class="r num">${c.mileage ? K(c.mileage) : '—'}</td>
+        <td>${srcPill(c)}</td><td class="r num"><b>${c.ask ? K(c.ask) : '—'}</b></td><td>${statusPill(c)}</td><td>${act(c)}</td></tr>`).join('') || '<tr><td colspan="11" class="empty">No cars match.</td></tr>'}</tbody></table></div>
+      ${pager(cars.length, ui.page, PER, 'pg', 'cars')}</div>`,
     bind(){
-      $('#fS').onchange = e => { ui.status = e.target.value; render(); };
-      $('#fB').onchange = e => { ui.body = e.target.value; render(); };
-      $('#fO').onchange = e => { ui.sort = e.target.value; render(); };
-      let t; $('#fQ').oninput = e => { clearTimeout(t); t = setTimeout(() => { ui.q = e.target.value; render(); const q = $('#fQ'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 250); };
-      if($('#addCar')) $('#addCar').onclick = () => carForm();
-      if($('#csvStock')) $('#csvStock').onclick = () => csvDownload(`stock-${S().today}.csv`, [['Plate', 'Car', 'Body', 'Colour', 'Status', 'In yard since', 'Days', 'Asking', 'Lowest', 'Bought for', 'Costs', 'Photos'],
-        ...stockCars().map(c => [c.plate, carName(c), BODYNAME[c.body], c.color, STATUS[c.status][0], c.in_date, daysIn(c), c.ask, c.floor, c.buy, sum((c.costs || []).map(x => x.amount)), c.photos.length])]);
+      const re = () => { ui.page = 1; render(); };
+      $('#fS').onchange = e => { ui.status = e.target.value; re(); };
+      $('#fM').onchange = e => { ui.make = e.target.value; re(); };
+      $('#fB').onchange = e => { ui.body = e.target.value; re(); };
+      $('#fR').onclick = () => { Object.assign(ui, {status:'all', make:'all', body:'all', q:''}); re(); };
+      let t; $('#fQ').oninput = e => { clearTimeout(t); t = setTimeout(() => { ui.q = e.target.value; ui.page = 1; render(); const q = $('#fQ'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 250); };
+      $$('[data-pg]').forEach(b => b.onclick = () => { ui.page = +b.dataset.pg; render(); });
+      $$('[data-edit]').forEach(b => b.onclick = e => { e.stopPropagation(); openCarForm({edit:+b.dataset.edit}); });
+      $$('[data-dup]').forEach(b => b.onclick = e => { e.stopPropagation(); openCarForm({dup:+b.dataset.dup}); });
+      $$('[data-del]').forEach(b => b.onclick = e => { e.stopPropagation(); const c = car(b.dataset.del); confirmBox('Remove this car?', `${esc(carName(c))} ${esc(c.plate || '')} will be removed from stock. The record is kept in the activity log.`, 'Remove', async why => { await API.post('cars.delete', {id:c.id, reason:why}); await refresh('Car removed'); }, true); });
+      if($('#addCar')) $('#addCar').onclick = e => { e.preventDefault(); openCarForm({}); };
+      if($('#csvStock')) $('#csvStock').onclick = () => csvDownload(`stock-${S().today}.csv`, [['Plate', 'Make', 'Model', 'Year', 'Body', 'Colour', 'Mileage', 'Source', 'Status', 'In yard since', 'Days', 'Asking', 'Lowest', 'Bought for', 'Costs', 'Logbook', 'Logbook no.', 'Photos'],
+        ...all.map(c => [c.plate, c.make, c.model, c.year, BODYNAME[c.body], c.color, c.mileage, (SOURCE[c.source] || [''])[0], STATUS[c.status][0], c.in_date, daysIn(c), c.ask, c.floor, c.buy, sum((c.costs || []).map(x => x.amount)), c.logbook_status ? LBS[c.logbook_status][0] : '', c.logbook_no, c.photos.length])]);
     }};
 }
 
@@ -286,38 +383,54 @@ function lightbox(c, start, onChange){
   $('#lbS', lb).addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
   document.body.appendChild(lb); show(i);
 }
+
+/* ---------- vehicle details ---------- */
+const STEPS = [['added', 'Car Added', IC.check, 's-green'], ['logbook', 'Logbook Received', IC.book, 's-purple'], ['price', 'Price Updated', IC.tag, 's-blue'], ['reserved', 'Reserved', IC.hand, 's-amber'], ['sold', 'Sold', IC.car, 's-gray']];
+function vehicleSheet(c){   // printable details (asking price only: buying price and lowest price stay internal)
+  const st = S().settings, ck = CHECKS.filter(([k]) => c.inspection && c.inspection[k]);
+  return `<div class="doc"><h2>Vehicle details</h2><div class="c" style="font-size:12px">${esc(st.business_name)}${st.location ? ' · ' + esc(st.location) : ''}${st.phone ? ' · ' + esc(st.phone) : ''}</div>
+    ${c.photos[0] ? `<p class="c"><img src="${esc(c.photos[0].url)}" alt="" style="max-width:100%;max-height:300px;border-radius:6px"></p>` : ''}
+    <table><tbody><tr><td>Vehicle</td><td><b>${esc([c.make, c.model].filter(Boolean).join(' '))}</b></td></tr><tr><td>Registration</td><td>${esc(c.plate || '—')}</td></tr>
+    <tr><td>Year of manufacture</td><td>${c.year || '—'}</td></tr><tr><td>Body / colour</td><td>${esc(BODYNAME[c.body])} · ${esc(c.color || '—')}</td></tr>
+    <tr><td>Engine / fuel / gearbox</td><td>${[engineTxt(c), c.fuel, c.gearbox].filter(Boolean).map(esc).join(' · ') || '—'}</td></tr><tr><td>Mileage</td><td>${c.mileage ? K(c.mileage) + ' km' : '—'}</td></tr>
+    <tr><td>Chassis no.</td><td>${esc(c.chassis || '—')}</td></tr><tr><td>Source</td><td>${(SOURCE[c.source] || SOURCE.local)[0]}</td></tr>
+    ${ck.map(([k, l]) => `<tr><td>${l}</td><td>${esc(checkTxt(c.inspection[k]))}</td></tr>`).join('')}
+    <tr><td>Logbook</td><td>${c.logbook_status ? LBS[c.logbook_status][0] : '—'}</td></tr><tr><td>Asking price</td><td><b>${c.ask ? KES(c.ask) : '—'}</b></td></tr></tbody></table>
+    <p style="font-size:11px;color:#555">Printed ${fmtD(S().today)}. Price and availability may change.</p></div>`;
+}
 function carModal(c){
   const mgr = isMgr(), s = ['sold', 'reserved'].includes(c.status) ? saleOf(c.id) : null, cost = carCost(c);
-  const specs = [['Year', c.year], ['Mileage', c.mileage ? K(c.mileage) + ' km' : null], ['Engine', c.cc ? c.cc + ' cc' : null], ['Fuel', c.fuel], ['Gearbox', c.gearbox], ['Colour', c.color], ['Body', BODYNAME[c.body]], ['In yard since', fmtD(c.in_date)]];
-  const insp = INSP.filter(([k]) => c.inspection && c.inspection[k]);
-  const body = `${gallery(c)}
-    <div class="ph-tools"><label class="btn sm">${IC.cam} Add photos<input type="file" id="phF" accept="image/jpeg,image/png,image/webp" multiple hidden></label>
-      ${mgr && c.photos.length ? `<button class="btn sm" id="phCover">Make this the cover photo</button><button class="btn sm danger" id="phDel">Delete this photo</button>` : ''}<span class="muted" id="phMsg" style="font-size:12px"></span></div>
-    <div class="row" style="flex-wrap:wrap">${plateHTML(c)}${statusPill(c)}<span class="muted" style="font-size:12px">${{local:'Locally used', import:'Fresh import', tradein:'Trade-in'}[c.source] || ''}${c.status !== 'sold' ? ` · in yard ${daysIn(c)} days` : ''}${c.chassis ? ` · chassis ${esc(c.chassis)}` : ''}</span></div>
-    <div class="specs">${specs.map(([l, v]) => `<div><span>${l}</span><b>${esc(v ?? '—')}</b></div>`).join('')}</div>
-    ${insp.length ? `<div><div class="muted" style="font-size:12px;font-weight:600;margin-bottom:6px">Checklist</div><div class="insp">${insp.map(([k, l]) => `<div><span>${l}</span><b>${esc(c.inspection[k])}</b></div>`).join('')}</div></div>` : ''}
-    ${mgr ? `<div class="grid g2" style="gap:14px;align-items:start"><div><div class="card-h" style="margin-bottom:6px"><h3>What this car has cost</h3></div><table class="tbl costs"><tbody>
-        <tr><td>Bought for</td><td class="muted nw">${fmtD(c.in_date)}</td><td class="r num">${c.buy != null ? K(c.buy) : '<span class="muted">not set</span>'}</td></tr>
-        ${(c.costs || []).map(x => `<tr><td>${esc(x.category)}${x.description ? ' — ' + esc(x.description) : ''}</td><td class="muted nw">${fmtD(x.date)}</td><td class="r num">${K(x.amount)} <button class="btn sm danger" data-dc="${x.id}" title="Remove">×</button></td></tr>`).join('')}
-        <tr><td><b>Total cost</b></td><td></td><td class="r num"><b>${K(cost)}</b></td></tr></tbody></table>
-        <button class="btn sm" id="cmCost" style="margin-top:8px">${IC.plus} Add a cost</button></div>
-      <div class="list"><div class="kv" style="grid-template-columns:1fr 1fr"><div><span>Asking price</span><b class="num">${c.ask ? K(c.ask) : '—'}</b></div><div><span>Lowest price</span><b class="num">${c.floor ? K(c.floor) : '—'}</b></div>
-        <div><span>${s && !s.reserved && s.price ? 'Profit on sale' : 'Profit at asking'}</span><b class="num">${c.buy == null ? '—' : K((s && !s.reserved && s.price ? s.price : num(c.ask)) - cost)}</b></div><div><span>Profit at lowest</span><b class="num">${c.buy == null || !c.floor ? '—' : K(c.floor - cost)}</b></div></div>
-        ${c.buy == null && c.status !== 'sold' ? '<div class="hint warn">Add the buying price (Edit) to see the profit on this car.</div>' : ''}
-        ${daysIn(c) > 60 && c.status !== 'sold' ? `<div class="hint warn">In the yard ${daysIn(c)} days. Consider a price drop or featuring it in adverts.</div>` : ''}</div></div>`
-    : `<div class="kv"><div><span>Asking price</span><b class="num">${c.ask ? K(c.ask) : '—'}</b></div><div><span>Lowest you can accept</span><b class="num">${c.floor ? K(c.floor) : '—'}</b></div><div><span>Status</span><b>${STATUS[c.status][0]}</b></div></div>`}
+  const L = [[IC.cal, 'Year of Manufacture', c.year], [IC.palette, 'Colour', c.color], [IC.fuel, 'Fuel', c.fuel], [IC.cog, 'Gearbox', c.gearbox], [IC.engine, 'Engine', engineTxt(c) ? `${engineTxt(c)} (${K(c.cc)} cc)` : null], [IC.barcode, 'Chassis No.', c.chassis]];
+  const R = [[IC.car, 'Make', c.make], [IC.layers, 'Model', c.model], [IC.car, 'Body', BODYNAME[c.body]], [IC.gauge, 'Mileage', c.mileage ? K(c.mileage) + ' km' : null], [IC.swap, 'Source', (SOURCE[c.source] || SOURCE.local)[0]], [IC.book, 'Logbook Status', c.logbook_status ? LBS[c.logbook_status][0] : null]];
+  const spec = rows => rows.map(([ic, l, v]) => `<div class="sp">${ic}<span>${l}:</span><b>${esc(v ?? '—')}</b></div>`).join('');
+  const ck = CHECKS.filter(([k]) => c.inspection && c.inspection[k]);
+  const body = `<div class="vd-top"><div class="vd-gal">${gallery(c)}
+      <div class="ph-tools"><label class="btn sm">${IC.cam} Add photos<input type="file" id="phF" accept="image/jpeg,image/png,image/webp" multiple hidden></label>
+      ${mgr && c.photos.length ? `<button class="btn sm" id="phCover">Make cover</button><button class="btn sm danger" id="phDel">Delete photo</button>` : ''}<span class="muted" id="phMsg" style="font-size:12px"></span></div></div>
+    <div class="vd-info"><div class="vd-head"><div><h2>${esc([c.make, c.model].filter(Boolean).join(' '))}</h2>${c.plate ? `<span class="plate-red">${esc(c.plate)}</span>` : ''}</div><span class="st-big ${STATUS[c.status][1]}">${IC.check}${STATUS[c.status][0]}</span></div>
+      <div class="vd-specs"><div>${spec(L)}</div><div>${spec(R)}</div></div>
+      ${mgr && c.status === 'prep' ? '<button class="btn sm good" id="stAv">Mark as available</button>' : mgr && c.status === 'available' ? '<button class="btn sm" id="stPr">Move to In Service</button>' : ''}</div></div>
+    <div class="vd-boxes"><div class="box">${panelH(IC.clip, 'Vehicle Checks &amp; Condition')}<div class="box-b">${ck.length ? ck.map(([k, l]) => `<div class="ckr"><span>${l}</span><span class="pill ${checkCls(c.inspection[k])}">${esc(checkTxt(c.inspection[k]))}</span></div>`).join('') : '<span class="muted">Not recorded.</span>'}</div></div>
+      <div class="box">${panelH(IC.layers, 'Pricing (KES)')}<div class="box-b pr-b"><div class="prr"><span>Asking Price</span><b class="num">${c.ask ? K(c.ask) : '—'}</b></div><div class="prr"><span>Lowest Price</span><b class="num">${c.floor ? K(c.floor) : '—'}</b></div>
+        ${mgr ? `<div class="prr"><span>Bought For</span><b class="num">${c.buy != null ? K(c.buy) : '—'}</b></div>${(c.costs || []).length ? `<div class="prr sm"><span>+ Costs (${c.costs.length})</span><b class="num">${K(cost - num(c.buy))}</b></div>` : ''}
+        <div class="prr tot"><span>${s && !s.reserved && s.price ? 'Profit on sale' : 'Profit at asking'}</span><b class="num">${c.buy == null ? '—' : K((s && !s.reserved && s.price ? s.price : num(c.ask)) - cost)}</b></div>
+        <button class="btn sm" id="cmCost">${IC.plus} Add a cost</button>${(c.costs || []).length ? ` <button class="btn sm" id="cmCosts">Costs</button>` : ''}` : ''}</div></div>
+      <div class="box">${panelH(IC.book, 'Logbook Information')}<div class="box-b">${mgr ? `<div class="lbr"><span>Logbook No.</span><b>${esc(c.logbook_no || '—')}</b></div><div class="lbr"><span>Date Received</span><b>${fmtD(c.logbook_date)}</b></div>
+        <div class="lbr"><span>Issuing Office</span><b>${esc(c.logbook_office || '—')}</b></div><div class="lbr"><span>Remarks</span><b>${esc(c.logbook_remarks || '—')}</b></div>
+        ${c.logbook_file ? `<a class="btn sm" href="api/?r=logbooks.file&car_id=${c.id}" target="_blank" rel="noopener">${IC.doc} View logbook scan</a>` : ''}` : `<div class="lbr"><span>Status</span>${lbPill(c.logbook_status)}</div>`}</div></div></div>
+    <div class="box hist">${panelH(IC.clock, 'Vehicle History')}<div class="tl" id="vdTl">${STEPS.map(([k, l, ic, cl]) => `<div class="tl-s ${cl}" data-st="${k}"><span class="tl-ic">${ic}</span><b>${l}</b><span class="tl-d">…</span></div>`).join('')}</div></div>
     ${s ? `<div class="hint">${s.reserved ? 'Reserved' : 'Sold'} to <b>${esc(s.buyer_name || 'buyer not recorded')}</b> · ${DEAL[s.type]}${s.date ? ' · ' + fmtD(s.date) : ''}${s.reserved && s.hold_until ? ` · hold until ${fmtD(s.hold_until)}` : ''} <a href="#" id="openSale">Open the sale</a></div>` : ''}
+    ${daysIn(c) > 60 && c.status !== 'sold' ? `<div class="hint warn">In the yard ${daysIn(c)} days. Consider a price drop or featuring it in adverts.</div>` : ''}
     ${c.notes ? `<div class="muted" style="font-size:12px">${esc(c.notes)}</div>` : ''}`;
-  const acts = [{label:'Close'}];
-  if(mgr) acts.push({label:'Edit', fn:() => carForm(c)});
-  if(isOwner() && c.status !== 'sold' && !s) acts.push({label:'Remove', cls:'danger', fn:() => confirmBox('Remove this car?', `${esc(carName(c))} ${esc(c.plate || '')} will be removed from stock. The record is kept in the activity log.`, 'Remove', async why => { await API.post('cars.delete', {id:c.id, reason:why}); await refresh('Car removed'); }, true)});
-  if(mgr && c.status === 'prep') acts.push({label:'Ready for sale', cls:'good', fn:async () => { await API.post('cars.status', {id:c.id, status:'available'}); await refresh(`${esc(carName(c))} is on sale`); }});
-  if(mgr && c.status === 'available') acts.push({label:'Back to preparing', fn:async () => { await API.post('cars.status', {id:c.id, status:'prep'}); await refresh('Moved to preparing'); }});
+  const acts = [{label:`${IC.print} Print Details`, fn:() => { printHTML(vehicleSheet(c)); return false; }}, {label:`${IC.dl} Download (PDF)`, fn:() => { toast('Choose “Save as PDF” as the printer to download it.'); printHTML(vehicleSheet(c)); return false; }}];
+  if(mgr) acts.push({label:`${IC.edit} Edit Car`, fn:() => openCarForm({edit:c.id})});
   if(c.status === 'reserved') acts.push({label:'Complete sale', cls:'primary', fn:() => saleWizard(c, s)});
   else if(['available', 'prep'].includes(c.status)) acts.push({label:'Reserve / sell', cls:'primary', fn:() => saleWizard(c)});
   else if(s) acts.push({label:`${IC.doc} Sale agreement`, fn:() => agreementModal(s)});
-  const bg = modal(esc(carName(c)) + (c.plate ? ' · ' + esc(c.plate) : ''), body, acts, true);
+  acts.push({label:`${IC.car} Close`, cls:'red'});
+  const bg = modal(`${IC.car} Vehicle Details`, body, acts, 'xwide');
   const cur = bindGallery(bg, c);
+  API.get('cars.history', {id:c.id}).then(h => h.steps.forEach(x => { const el = $(`[data-st="${x.k}"]`, bg); if(!el) return; el.classList.toggle('done', !!x.date); $('.tl-d', el).textContent = x.date ? fmtD(x.date) : '—'; })).catch(() => $$('.tl-d', bg).forEach(x => x.textContent = '—'));
   $('#phF', bg).onchange = async e => {
     const files = [...e.target.files]; if(!files.length) return;
     $('#phMsg', bg).textContent = `Uploading ${pl(files.length, 'photo')}…`;
@@ -326,40 +439,150 @@ function carModal(c){
       bg._close(); await refresh(`${pl(files.length, 'photo')} added`); carModal(car(c.id));
     } catch(err){ $('#phMsg', bg).textContent = err.message; }
   };
-  if($('#phCover', bg)) $('#phCover', bg).onclick = async () => { try { await API.post('photos.cover', {id:cur().id}); bg._close(); await refresh('Cover photo set'); carModal(car(c.id)); } catch(e){ toast(e.message, 1); } };
-  if($('#phDel', bg)) $('#phDel', bg).onclick = () => confirmBox('Delete this photo?', 'The photo will be deleted from the server.', 'Delete', async () => { await API.post('photos.delete', {id:cur().id}); bg._close(); await refresh('Photo deleted'); carModal(car(c.id)); });
+  const again = async msg => { bg._close(); await refresh(msg); carModal(car(c.id)); };
+  if($('#phCover', bg)) $('#phCover', bg).onclick = async () => { try { await API.post('photos.cover', {id:cur().id}); await again('Cover photo set'); } catch(e){ toast(e.message, 1); } };
+  if($('#phDel', bg)) $('#phDel', bg).onclick = () => confirmBox('Delete this photo?', 'The photo will be deleted from the server.', 'Delete', async () => { await API.post('photos.delete', {id:cur().id}); await again('Photo deleted'); });
+  if($('#stAv', bg)) $('#stAv', bg).onclick = async () => { try { await API.post('cars.status', {id:c.id, status:'available'}); await again('Now available for sale'); } catch(e){ toast(e.message, 1); } };
+  if($('#stPr', bg)) $('#stPr', bg).onclick = async () => { try { await API.post('cars.status', {id:c.id, status:'prep'}); await again('Moved to In Service'); } catch(e){ toast(e.message, 1); } };
   if($('#cmCost', bg)) $('#cmCost', bg).onclick = () => { bg._close(); costModal(c); };
-  $$('[data-dc]', bg).forEach(b => b.onclick = () => confirmBox('Remove this cost?', 'It will be taken off this car.', 'Remove', async () => { await API.post('costs.delete', {id:+b.dataset.dc}); bg._close(); await refresh('Cost removed'); carModal(car(c.id)); }));
+  if($('#cmCosts', bg)) $('#cmCosts', bg).onclick = () => costsList(c);
   if($('#openSale', bg)) $('#openSale', bg).onclick = e => { e.preventDefault(); bg._close(); saleModal(s); };
+}
+function costsList(c){
+  const bg = modal(`Costs · ${esc(carName(c))}`, `<table class="tbl"><tbody><tr><td>Bought for</td><td class="muted nw">${fmtD(c.in_date)}</td><td class="r num">${c.buy != null ? K(c.buy) : '—'}</td><td></td></tr>
+    ${(c.costs || []).map(x => `<tr><td>${esc(x.category)}${x.description ? ' — ' + esc(x.description) : ''}</td><td class="muted nw">${fmtD(x.date)}</td><td class="r num">${K(x.amount)}</td><td><button class="btn sm danger" data-dc="${x.id}">×</button></td></tr>`).join('')}
+    <tr><td><b>Total cost</b></td><td></td><td class="r num"><b>${K(carCost(c))}</b></td><td></td></tr></tbody></table>`, [{label:'Close'}]);
+  $$('[data-dc]', bg).forEach(b => b.onclick = () => confirmBox('Remove this cost?', 'It will be taken off this car.', 'Remove', async () => { await API.post('costs.delete', {id:+b.dataset.dc}); bg._close(); $$('.modal-bg').forEach(x => x._close && x._close()); await refresh('Cost removed'); carModal(car(c.id)); }));
 }
 function costModal(c){
   modal(`Add a cost · ${esc(carName(c))}`, `<div class="form-grid"><label class="field">Type<select id="xc">${S().cost_types.map(t => `<option>${t}</option>`).join('')}</select></label><label class="field">Amount (KES)<input type="number" id="xa" min="1"></label>
     <label class="field">Date<input type="date" id="xd" value="${S().today}" max="${S().today}"></label><label class="field">Details (optional)<input id="xn" placeholder="e.g. 4 new tyres"></label></div>`,
     [{label:'Cancel'}, {label:'Add cost', cls:'primary', fn:async bg => { await API.post('costs.add', {car_id:c.id, category:fv(bg, 'xc'), amount:fv(bg, 'xa'), date:fv(bg, 'xd'), description:fv(bg, 'xn')}); await refresh('Cost added'); carModal(car(c.id)); }}]);
 }
-function carForm(c){
-  const e = c || {body:'sedan', source:'local', inspection:{}, in_date:S().today}, i = e.inspection || {};
-  const o = (v, cur) => `<option value="${v}" ${v === cur ? 'selected' : ''}>`;
-  modal(c ? `Edit · ${esc(carName(c))}` : 'Add a car', `<div class="form-grid">
-    <label class="field">Make<input id="cMk" value="${esc(e.make)}" placeholder="Toyota"></label><label class="field">Model<input id="cMd" value="${esc(e.model)}" placeholder="Fielder"></label>
-    <label class="field">Plate<input id="cPl" value="${esc(e.plate)}" placeholder="KDA 123A"></label><label class="field">Year of manufacture<input type="number" id="cYr" value="${esc(e.year)}"></label>
-    <label class="field">Body<select id="cBd">${Object.entries(BODYNAME).map(([v, l]) => o(v, e.body) + l + '</option>').join('')}</select></label><label class="field">Colour<input id="cCo" value="${esc(e.color)}"></label>
-    <label class="field">Mileage (km)<input type="number" id="cMi" value="${esc(e.mileage)}"></label><label class="field">Engine (cc)<input type="number" id="cCc" value="${esc(e.cc)}"></label>
-    <label class="field">Fuel<select id="cFu"><option value=""></option>${['Petrol', 'Diesel', 'Hybrid', 'Electric'].map(v => o(v, e.fuel) + v + '</option>').join('')}</select></label><label class="field">Gearbox<select id="cGb"><option value=""></option>${['Automatic', 'Manual'].map(v => o(v, e.gearbox) + v + '</option>').join('')}</select></label>
-    <label class="field">Chassis no.<input id="cCh" value="${esc(e.chassis)}"></label><label class="field">Source<select id="cSr">${[['local', 'Locally used'], ['import', 'Fresh import'], ['tradein', 'Trade-in']].map(([v, l]) => o(v, e.source) + l + '</option>').join('')}</select></label>
-    <label class="field">In the yard since<input type="date" id="cIn" value="${esc(e.in_date)}"></label><label class="field">Logbook<select id="cLb"><option value=""></option>${[['present', 'With us'], ['missing', 'Not yet received']].map(([v, l]) => o(v, e.logbook) + l + '</option>').join('')}</select></label>
-    <label class="field">Asking price (KES)<input type="number" id="cAs" value="${esc(e.ask)}"></label><label class="field">Lowest price sales staff may accept<input type="number" id="cFl" value="${esc(e.floor)}"></label>
-    <label class="field">Bought for (KES) <span class="muted" style="font-size:11px">· owner & managers only</span><input type="number" id="cBy" value="${esc(e.buy)}"></label><div></div></div>
-    <div class="muted" style="font-size:12px;font-weight:600">Checklist</div><div class="insp">${INSP.map(([k, l]) => `<label class="field">${l}<input id="i_${k}" value="${esc(i[k])}"></label>`).join('')}</div>
-    <label class="field">Notes<textarea id="cNo">${esc(e.notes)}</textarea></label>
-    ${c ? '' : '<label class="switch"><input type="checkbox" id="cRd" checked> Ready for sale now (otherwise it is listed as Preparing)</label>'}`,
-    [{label:'Cancel'}, {label:c ? 'Save' : 'Add car', cls:'primary', fn:async bg => {
-      const inspection = {}; INSP.forEach(([k]) => inspection[k] = fv(bg, 'i_' + k));
-      const r = await API.post('cars.save', {id:c ? c.id : null, make:fv(bg, 'cMk'), model:fv(bg, 'cMd'), plate:fv(bg, 'cPl'), year:fv(bg, 'cYr'), body:fv(bg, 'cBd'), color:fv(bg, 'cCo'), mileage:fv(bg, 'cMi'), cc:fv(bg, 'cCc'),
-        fuel:fv(bg, 'cFu'), gearbox:fv(bg, 'cGb'), chassis:fv(bg, 'cCh'), source:fv(bg, 'cSr'), in_date:fv(bg, 'cIn'), logbook:fv(bg, 'cLb'), ask:fv(bg, 'cAs'), floor:fv(bg, 'cFl'), buy:fv(bg, 'cBy'),
-        inspection, notes:fv(bg, 'cNo'), ready:fv(bg, 'cRd'), featured:c ? c.featured : false});
-      await refresh(c ? 'Car saved' : 'Car added — now add its photos'); carModal(car(r.id));
-    }}], true);
+
+/* ================= CREATE / EDIT CAR (full page) ================= */
+const DRAFT_KEY = 'gari.carDraft';
+const draftGet = () => { try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch(e){ return null; } };
+const draftSet = v => { try { v ? localStorage.setItem(DRAFT_KEY, JSON.stringify(v)) : localStorage.removeItem(DRAFT_KEY); } catch(e){} };
+function openCarForm(o){ ui.form = o; if(location.hash === '#/create') render(); else location.hash = '#/create'; window.scrollTo(0, 0); }
+function viewCreate(){
+  const f = ui.form || {}, src = f.edit ? car(f.edit) : f.dup ? car(f.dup) : null, editing = !!f.edit && src;
+  let e = src ? {...src, inspection:{...(src.inspection || {})}} : {body:'', source:'local', inspection:{wheel_check:'Available', wheel_spanner:'Available', spare_wheel:'Available', additional_spare:'Not available', battery:'Good', radio:'Normal'}, in_date:S().today, logbook_status:'with_us', status:'available'};
+  if(f.dup && src) Object.assign(e, {id:null, plate:'', chassis:'', logbook_no:'', logbook_date:'', logbook_remarks:'', logbook_file:false, in_date:S().today, status:'available', buy:src.buy, mileage:''});
+  const draft = !editing && !f.dup ? draftGet() : null; if(draft) e = draft;
+  const i = e.inspection || {}, req = editing ? '' : '<i class="req">*</i>', row = (ic, l, ctl, r = true) => `<div class="fr">${ic ? `<span class="fr-ic">${ic}</span>` : ''}<label>${l}${r ? req : ''}</label>${ctl}</div>`;
+  const yrs = []; for(let y = +S().today.slice(0, 4) + 1; y >= 1980; y--) yrs.push(String(y));
+  return {title:editing ? 'Edit Car' : 'Create Car', sub:editing ? `${esc(carName(src))} · ${esc(src.plate || '')}` : 'Add a new vehicle to the inventory',
+    html:`${draft ? '<div class="hint">A saved draft was restored. <a href="#" id="dropDraft">Discard it</a></div>' : ''}${f.dup && src ? `<div class="hint">Copied from ${esc(carName(src))}. Enter the plate, chassis and logbook of the new car.</div>` : ''}
+    <form id="cf" class="cf3" autocomplete="off">
+      <div class="panel">${panelH(IC.clip, editing ? 'Edit Car' : 'Create Car')}
+        <div class="sec-h">Section 1: Vehicle Checks &amp; Condition</div>
+        ${CHECKS.map(([k, l, list]) => row('', l, `<select id="i_${k}">${opts(list, i[k] || '', '—')}</select>`, false)).join('')}
+        ${row('', 'In the yard since', `<input type="date" id="cIn" value="${esc(e.in_date)}" max="${S().today}">`)}
+        ${row('', 'Source', `<select id="cSr">${opts([['local', 'Locally used'], ['import', 'Fresh import'], ['tradein', 'Trade-in']], e.source)}</select>`)}
+        ${e.status === 'available' || e.status === 'prep' || !editing ? row('', 'Status', `<select id="cSt">${opts([['available', 'Available for sale'], ['prep', 'In Service (not yet on sale)']], e.status === 'prep' ? 'prep' : 'available')}</select>`) : ''}
+        <div class="sec-h">Section 2: Pricing</div>
+        ${row('', 'Asking Price (KES)', `<input type="number" id="cAs" min="0" value="${esc(e.ask ?? '')}" placeholder="Enter asking price">`)}
+        ${row('', 'Lowest Price (KES)', `<input type="number" id="cFl" min="0" value="${esc(e.floor ?? '')}" placeholder="Enter lowest price">`, false)}
+        ${row('', 'Bought For (KES)', `<input type="number" id="cBy" min="0" value="${esc(e.buy ?? '')}" placeholder="Enter purchase price">`, false)}
+        <label class="field" style="margin-top:8px">Notes<textarea id="cNo" placeholder="Optional">${esc(e.notes || '')}</textarea></label></div>
+      <div class="panel">${panelH(IC.car, 'More Details')}<div class="frs">
+        ${row(IC.car, 'Make', `<select id="cMk">${opts(MAKES, e.make || '', 'Select make')}</select>`)}
+        ${row(IC.layers, 'Model', `<input id="cMd" value="${esc(e.model || '')}" placeholder="Enter model">`)}
+        ${row(IC.plate, 'Plate', `<input id="cPl" value="${esc(e.plate || '')}" placeholder="Enter registration number">`)}
+        ${row(IC.cal, 'Year of Manufacture', `<select id="cYr">${opts(yrs, e.year ? String(e.year) : '', 'Select year')}</select>`)}
+        ${row(IC.car, 'Body', `<select id="cBd">${opts(Object.entries(BODYNAME), e.body || '', 'Select body type')}</select>`)}
+        ${row(IC.palette, 'Colour', `<select id="cCo">${opts(COLOURS, e.color || '', 'Select colour')}</select>`)}
+        ${row(IC.gauge, 'Mileage', `<input type="number" id="cMi" min="0" value="${esc(e.mileage ?? '')}" placeholder="Enter mileage (e.g. 85,000)">`, false)}
+        ${row(IC.engine, 'Engine', `<input id="cEn" value="${esc(e.engine ?? (e.cc ? (e.cc / 1000).toFixed(1) + 'L' : ''))}" placeholder="Enter engine (e.g. 2.0L)">`, false)}
+        ${row(IC.fuel, 'Fuel', `<select id="cFu">${opts(['Petrol', 'Diesel', 'Hybrid', 'Electric'], e.fuel || '', 'Select fuel type')}</select>`)}
+        ${row(IC.cog, 'Gearbox', `<select id="cGb">${opts(['Automatic', 'Manual'], e.gearbox || '', 'Select gearbox')}</select>`)}
+        ${row(IC.barcode, 'Chassis No.', `<input id="cCh" value="${esc(e.chassis || '')}" placeholder="Enter chassis number">`, false)}</div></div>
+      <div class="panel">${panelH(IC.book, 'Logbook Management')}
+        ${row('', 'Logbook Status', `<select id="lSt">${opts(Object.entries(LBS).map(([k, v]) => [k, v[0].replace(/\b\w/g, x => x.toUpperCase())]), e.logbook_status || '', '—')}</select>`)}
+        <div class="sub-box"><div class="sub-h">${IC.doc} Logbook Details</div>
+          ${row('', 'Logbook No.', `<input id="lNo" value="${esc(e.logbook_no || '')}" placeholder="Enter logbook number">`, false)}
+          ${row('', 'Logbook Date', `<input type="date" id="lDt" value="${esc(e.logbook_date || '')}" max="${S().today}">`, false)}
+          ${row('', 'Issuing Office', `<select id="lOf">${opts(OFFICES, e.logbook_office || '', 'Select office')}</select>`, false)}
+          ${row('', 'Remarks', `<textarea id="lRm" placeholder="Enter remarks (optional)">${esc(e.logbook_remarks || '')}</textarea>`, false)}</div>
+        <label class="drop">${IC.upload}<b>Upload Logbook (Scan / Photo)</b><span>PNG, JPG or PDF (Max 5 MB)</span><span class="btn sm red-o">${IC.upload} Choose File</span>
+          <input type="file" id="lFile" accept="application/pdf,image/jpeg,image/png" hidden><span class="drop-f" id="lFn">${editing && src.logbook_file ? 'A scan is on file. Choose a file to replace it.' : 'No file selected'}</span></label></div>
+      <div class="cf-acts"><button type="button" class="btn" id="cfDraft">${IC.reset} Save Draft</button><button type="button" class="btn" id="cfCancel">Cancel</button><button type="submit" class="btn red big" id="cfSave">${IC.save} Save Car</button><div class="err" id="cfErr"></div></div>
+    </form>`,
+    bind(){
+      const g = id => fv(document, id);
+      const collect = () => { const inspection = {}; CHECKS.forEach(([k]) => inspection[k] = g('i_' + k)); return {make:g('cMk'), model:g('cMd'), plate:g('cPl'), year:g('cYr'), body:g('cBd'), color:g('cCo'), mileage:g('cMi'), engine:g('cEn'),
+        fuel:g('cFu'), gearbox:g('cGb'), chassis:g('cCh'), source:g('cSr'), in_date:g('cIn'), ask:g('cAs'), floor:g('cFl'), buy:g('cBy'), notes:g('cNo'), inspection, status:g('cSt'),
+        logbook_status:g('lSt'), logbook_no:g('lNo'), logbook_date:g('lDt'), logbook_office:g('lOf'), logbook_remarks:g('lRm')}; };
+      $('#lFile').onchange = e => { const x = e.target.files[0]; $('#lFn').textContent = x ? `${x.name} · ${(x.size / 1048576).toFixed(1)} MB` : 'No file selected'; if(x && x.size > 5 * 1048576){ toast('The logbook file is over 5 MB.', 1); e.target.value = ''; $('#lFn').textContent = 'No file selected'; } };
+      if($('#dropDraft')) $('#dropDraft').onclick = ev => { ev.preventDefault(); draftSet(null); render(); };
+      $('#cfDraft').onclick = () => { if(editing){ toast('Drafts are for new cars. Save your changes instead.'); return; } draftSet(collect()); toast('Draft saved on this device'); };
+      $('#cfCancel').onclick = () => { ui.form = null; location.hash = '#/stock'; };
+      $('#cf').onsubmit = async ev => {
+        ev.preventDefault(); $('#cfErr').textContent = ''; const b = $('#cfSave'); b.disabled = true;
+        try {
+          const d = collect(), body = {...d, id:editing ? src.id : null, ready:d.status !== 'prep', featured:editing ? src.featured : false};
+          const r = await API.post('cars.save', body);
+          if(editing && d.status && d.status !== src.status && ['available', 'prep'].includes(src.status)) await API.post('cars.status', {id:src.id, status:d.status});
+          const file = $('#lFile').files[0];
+          if(file){ const fd = new FormData(); fd.append('car_id', r.id); fd.append('file', file); try { await API.upload('logbooks.upload', fd); } catch(err){ toast('The car was saved, but the logbook file was not: ' + err.message, 1); } }
+          if(!editing) draftSet(null);
+          ui.form = null; location.hash = '#/stock'; await refresh(editing ? 'Car saved' : 'Car added — now add its photos'); carModal(car(r.id));
+        } catch(err){ $('#cfErr').textContent = err.message; toast(err.message, 1); } finally { b.disabled = false; }
+      };
+    }};
+}
+
+/* ================= LOGBOOK MANAGEMENT (the car's own logbook) ================= */
+function viewLogbookMgmt(){
+  const PER = 10, list0 = S().cars.filter(c => c.status !== 'sold' || c.logbook_status);
+  let list = list0.filter(c => ui.lbSt === 'all' || (ui.lbSt === 'none' ? !c.logbook_status : c.logbook_status === ui.lbSt));
+  if(ui.lbQ){ const q = ui.lbQ.toLowerCase().replace(/\s/g, ''); list = list.filter(c => ((c.plate || '') + (c.logbook_no || '') + (c.chassis || '') + carName(c)).toLowerCase().replace(/\s/g, '').includes(q)); }
+  list.sort((a, b) => (a.logbook_status === 'not_received' ? 0 : 1) - (b.logbook_status === 'not_received' ? 0 : 1) || (b.in_date || '').localeCompare(a.in_date || ''));
+  const pages = Math.max(1, Math.ceil(list.length / PER)); if(ui.lbPage > pages) ui.lbPage = pages;
+  const shown = list.slice((ui.lbPage - 1) * PER, ui.lbPage * PER), sel = ui.lbCar ? car(ui.lbCar) : null, cnt = k => list0.filter(c => c.logbook_status === k).length;
+  return {title:'Logbook Management', sub:'Manage vehicle logbooks: add, update, track status and history',
+    html:`<div class="lb-grid"><div class="panel">${panelH(IC.book, 'Logbook Management')}
+      <div class="tiles t4">${tile('t-red', IC.book, 'Total Vehicles', list0.length)}${tile('t-green', IC.check, 'With Us', cnt('with_us'))}${tile('t-amber', IC.clock, 'Not Yet Received', cnt('not_received'))}${tile('t-blue', IC.reset, 'In Process', cnt('in_process'))}</div>
+      <div class="filters fl-inv"><label class="search">${IC.search}<input type="search" id="lbQ" value="${esc(ui.lbQ)}" placeholder="Search by plate, logbook no. or chassis no."></label>
+        <select id="lbS" aria-label="Logbook status">${opts([['all', 'All Logbook Status'], ...Object.entries(LBS).map(([k, v]) => [k, v[0]]), ['none', 'Not recorded']], ui.lbSt)}</select>
+        <button class="btn red" id="lbAdd">${IC.plus} Add Logbook</button></div>
+      <div class="tbl-wrap"><table class="tbl inv"><thead><tr><th>#</th><th>Plate</th><th>Make &amp; Model</th><th>Logbook No.</th><th>Status</th><th>Date Received</th><th>Actions</th></tr></thead><tbody>
+      ${shown.map((c, i) => `<tr class="${sel && sel.id === c.id ? 'sel' : ''}"><td class="muted">${(ui.lbPage - 1) * PER + i + 1}</td><td><b class="nw">${esc(c.plate || '—')}</b></td><td>${esc([c.make, c.model].filter(Boolean).join(' '))}</td>
+        <td>${esc(c.logbook_no || '—')}</td><td>${lbPill(c.logbook_status)}</td><td class="nw">${c.logbook_status === 'with_us' && c.logbook_date ? fmtD(c.logbook_date) : '—'}</td>
+        <td><div class="acts"><button class="ia" data-car="${c.id}" title="View car">${IC.eye}</button><button class="ia" data-lbe="${c.id}" title="Update logbook">${IC.edit}</button><button class="ia" data-lbh="${c.id}" title="History">${IC.clock}</button>${c.logbook_file ? `<a class="ia" href="api/?r=logbooks.file&car_id=${c.id}" target="_blank" rel="noopener" title="Logbook scan">${IC.doc}</a>` : ''}</div></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No vehicles match.</td></tr>'}</tbody></table></div>
+      ${pager(list.length, ui.lbPage, PER, 'lpg', 'records')}</div>
+    <div class="lb-side"><div class="panel">${panelH(IC.book, 'Add / Update Logbook')}<form id="lbF" class="frs" autocomplete="off">
+        <div class="fr"><span class="fr-ic">${IC.car}</span><label>Vehicle<i class="req">*</i></label><select id="fCar"><option value="">Select vehicle (Plate / Make / Model)</option>${S().cars.filter(c => c.status !== 'sold' || c.logbook_status).map(c => `<option value="${c.id}" ${sel && sel.id === c.id ? 'selected' : ''}>${esc((c.plate || 'No plate') + ' · ' + [c.make, c.model].filter(Boolean).join(' '))}</option>`).join('')}</select></div>
+        <div class="fr"><span class="fr-ic">${IC.book}</span><label>Logbook No.</label><input id="fNo" value="${esc(sel ? sel.logbook_no || '' : '')}" placeholder="Enter logbook number"></div>
+        <div class="fr"><span class="fr-ic">${IC.reset}</span><label>Logbook Status<i class="req">*</i></label><select id="fSt">${opts(Object.entries(LBS).map(([k, v]) => [k, v[0]]), sel ? sel.logbook_status || '' : '', '—')}</select></div>
+        <div class="fr"><span class="fr-ic">${IC.cal}</span><label>Date Received</label><input type="date" id="fDt" max="${S().today}" value="${esc(sel ? sel.logbook_date || '' : '')}"></div>
+        <div class="fr"><span class="fr-ic">${IC.office}</span><label>Issuing Office</label><select id="fOf">${opts(OFFICES, sel ? sel.logbook_office || '' : '', 'Select issuing office')}</select></div>
+        <div class="fr"><span class="fr-ic">${IC.chat}</span><label>Remarks</label><textarea id="fRm" placeholder="Enter remarks (e.g. transfer, follow up, etc.)">${esc(sel ? sel.logbook_remarks || '' : '')}</textarea></div>
+        <div class="fr"><span class="fr-ic">${IC.upload}</span><label>Scan / photo</label><input type="file" id="fFile" accept="application/pdf,image/jpeg,image/png"></div>
+        <div class="err" id="fErr"></div><div class="lb-acts"><button type="button" class="btn" id="fClr">${IC.reset} Clear</button><button class="btn red big">${IC.save} Save Logbook</button></div></form></div>
+      <div class="panel">${panelH(IC.clock, 'Logbook History')}<div id="lbHist">${sel ? '<div class="muted">Loading…</div>' : '<div class="muted" style="padding:6px 2px">Choose a vehicle to see its logbook history.</div>'}</div></div></div></div>`,
+    bind(){
+      $('#lbS').onchange = e => { ui.lbSt = e.target.value; ui.lbPage = 1; render(); };
+      let t; $('#lbQ').oninput = e => { clearTimeout(t); t = setTimeout(() => { ui.lbQ = e.target.value; ui.lbPage = 1; render(); const q = $('#lbQ'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 250); };
+      $$('[data-lpg]').forEach(b => b.onclick = () => { ui.lbPage = +b.dataset.lpg; render(); });
+      $$('[data-lbe],[data-lbh]').forEach(b => b.onclick = () => { ui.lbCar = +(b.dataset.lbe || b.dataset.lbh); render(); });
+      $('#lbAdd').onclick = () => { ui.lbCar = null; render(); $('#fCar').focus(); };
+      $('#fCar').onchange = e => { ui.lbCar = +e.target.value || null; render(); };
+      $('#fClr').onclick = () => { ui.lbCar = null; render(); };
+      $('#lbF').onsubmit = async ev => {
+        ev.preventDefault(); $('#fErr').textContent = '';
+        try {
+          const id = +fv(document, 'fCar'); if(!id) throw new Error('Choose the vehicle.');
+          await API.post('logbooks.save', {car_id:id, logbook_no:fv(document, 'fNo'), logbook_status:fv(document, 'fSt'), logbook_date:fv(document, 'fDt'), logbook_office:fv(document, 'fOf'), logbook_remarks:fv(document, 'fRm')});
+          const file = $('#fFile').files[0]; if(file){ if(file.size > 5 * 1048576) throw new Error('The logbook file is over 5 MB.'); const fd = new FormData(); fd.append('car_id', id); fd.append('file', file); await API.upload('logbooks.upload', fd); }
+          ui.lbCar = id; await refresh('Logbook saved');
+        } catch(err){ $('#fErr').textContent = err.message; }
+      };
+      if(sel) API.get('logbooks.history', {car_id:sel.id}).then(h => { const box = $('#lbHist'); if(!box) return;
+        box.innerHTML = h.length ? `<table class="tbl"><thead><tr><th>Date</th><th>Status</th><th>Remarks</th><th>Updated By</th></tr></thead><tbody>${h.map(x => `<tr><td class="nw">${fmtD(x.date)}</td><td>${lbPill(x.status)}</td><td>${esc(x.remarks || '')}</td><td>${esc(x.name || 'System')}</td></tr>`).join('')}</tbody></table>` : '<div class="muted">No history yet.</div>';
+      }).catch(err => { if($('#lbHist')) $('#lbHist').innerHTML = `<div class="err">${esc(err.message)}</div>`; });
+    }};
 }
 
 /* ================= SELLING ================= */
@@ -491,7 +714,7 @@ function viewDashboard(){
       ${kpi(`Collected in ${pLabel(m, false)}`, short(sum(collectedIn(m).map(p => p.amount))), 'instalments, deposits, sales & loan repayments')}
       ${kpi('Owed to the yard', short(sum(crKnown.map(s => s.balance)) + sum(loKnown.map(l => l.balance))), `${pl(cr.length, 'credit sale')} · ${pl(lo.length, 'logbook loan')}${unconf ? ` · <b class="down">${unconf} unconfirmed</b>` : ''}`)}</div>
     ${unconf ? `<div class="hint warn"><b>${unconf} balances from the old sheet are unconfirmed.</b> Open each one under Instalments or Logbook loans and set today's balance, so the totals are complete.</div>` : ''}
-    ${noPrice || noPhoto ? `<div class="hint">${noPrice ? `${pl(noPrice, 'car')} in the yard ${noPrice === 1 ? 'has' : 'have'} no asking price. ` : ''}${noPhoto ? `${pl(noPhoto, 'car')} ${noPhoto === 1 ? 'has' : 'have'} no photos.` : ''} <a href="#/stock">Open stock</a></div>` : ''}
+    ${noPrice || noPhoto ? `<div class="hint">${noPrice ? `${pl(noPrice, 'car')} in the yard ${noPrice === 1 ? 'has' : 'have'} no asking price. ` : ''}${noPhoto ? `${pl(noPhoto, 'car')} ${noPhoto === 1 ? 'has' : 'have'} no photos.` : ''} <a href="#/stock">Open Cars / Inventory</a></div>` : ''}
     <div class="grid g2">
       <div class="card"><div class="card-h"><h3>Instalments behind</h3><span class="sub">${pl(late.length, 'buyer')}</span><div class="right"><a class="btn sm" href="#/credit">All instalments</a></div></div>
         ${late.length ? `<table class="tbl"><tbody>${late.slice(0, 8).map(s => `<tr class="click" data-sale="${s.id}"><td><b>${esc(s.buyer_name)}</b><div class="muted" style="font-size:12px">${esc(carName(car(s.car_id)))} · ${esc(car(s.car_id).plate || '')}</div></td><td class="muted nw">${s.sched.overdue_days} days</td><td class="r num down">${K(s.sched.arrears)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">No one is behind.</div>'}</div>
@@ -538,7 +761,7 @@ function viewCredit(){
 function viewLogbooks(){
   const list = S().sales.filter(s => !s.reserved && s.logbook !== 'transferred' && !(s.legacy && s.logbook === 'pending' && !s.buyer_name));
   const order = ['held', 'pending', 'initiated', 'transferred'];
-  return {title:'Logbooks', sub:`${pl(list.length, 'logbook')} not yet transferred to the buyer`,
+  return {title:'Logbook Transfers', sub:`${pl(list.length, 'logbook')} not yet transferred to the buyer`,
     html:`<div class="card"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Car</th><th>Buyer</th><th>Sold</th><th>Step</th><th></th></tr></thead><tbody>
       ${list.sort((a, b) => order.indexOf(a.logbook) - order.indexOf(b.logbook)).map(s => { const c = car(s.car_id), owes = s.type === 'credit' && (s.balance_known === false || num(s.balance) > 0);
         const next = s.logbook === 'held' ? (owes ? null : 'pending') : s.logbook === 'pending' ? 'initiated' : 'transferred';
@@ -668,7 +891,7 @@ function viewActivity(){
     }};
 }
 
-const VIEWS = {dashboard:viewDashboard, stock:viewStock, sales:viewSales, credit:viewCredit, loans:viewLoans, logbooks:viewLogbooks, reports:viewReports, staff:viewStaff, settings:viewSettings, activity:viewActivity};
+const VIEWS = {dashboard:viewDashboard, stock:viewStock, create:viewCreate, logbookmgmt:viewLogbookMgmt, sales:viewSales, credit:viewCredit, loans:viewLoans, logbooks:viewLogbooks, reports:viewReports, staff:viewStaff, settings:viewSettings, activity:viewActivity};
 
 /* ---------- start ---------- */
 (async () => {

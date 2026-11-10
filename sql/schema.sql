@@ -62,6 +62,12 @@ CREATE TABLE IF NOT EXISTS cars (
   featured TINYINT(1) NOT NULL DEFAULT 0,
   inspection TEXT NULL,                     -- JSON: wheel check, spanner, spare wheel, battery, radio
   logbook VARCHAR(20) NULL,                 -- present / missing / with buyer
+  logbook_status ENUM('with_us','not_received','in_process') NULL,   -- the car's own logbook, from the previous owner
+  logbook_no VARCHAR(40) NULL,
+  logbook_date DATE NULL,
+  logbook_office VARCHAR(60) NULL,
+  logbook_remarks VARCHAR(300) NULL,
+  logbook_file VARCHAR(120) NULL,           -- scan, stored privately under app/storage/logbooks
   notes TEXT NULL,
   created_by INT UNSIGNED NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -168,6 +174,17 @@ CREATE TABLE IF NOT EXISTS payments (
   KEY k_pay_sale (sale_id),
   KEY k_pay_loan (loan_id),
   KEY k_pay_date (date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS car_logbook_log (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  car_id INT UNSIGNED NOT NULL,
+  date DATE NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  remarks VARCHAR(300) NULL,
+  user_id INT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY k_lblog_car (car_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS expenses (

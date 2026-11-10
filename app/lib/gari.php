@@ -8,6 +8,8 @@ const PAY_METHODS = ['mpesa' => 'M-Pesa', 'bank' => 'Bank transfer', 'cash' => '
 const COST_TYPES = ['Buying commission', 'Service & oil', 'Tyres', 'Body work & paint', 'Detailing', 'Mechanical repair', 'Battery', 'NTSA transfer & inspection', 'Advertising', 'Other'];
 const EXPENSE_TYPES = ['Yard rent', 'Salaries', 'Advertising', 'Electricity & water', 'Security', 'Transport', 'Licences & permits', 'Other'];
 const MPESA_MAX = 250000;
+const LOGBOOK_STATUS = ['with_us' => 'With us', 'not_received' => 'Not yet received', 'in_process' => 'In process'];
+const INSPECTION_KEYS = ['wheel_check', 'wheel_spanner', 'spare_wheel', 'additional_spare', 'battery', 'radio'];
 
 function add_months(string $date, int $n): string {
     $d = new DateTime($date); $day = (int)$d->format('j');
@@ -103,9 +105,11 @@ function app_state(array $u): array {
             'mileage' => $c['mileage'] === null ? null : (int)$c['mileage'], 'cc' => $c['cc'] === null ? null : (int)$c['cc'], 'fuel' => $c['fuel'], 'gearbox' => $c['gearbox'],
             'color' => $c['color'], 'chassis' => $c['chassis'], 'source' => $c['source'], 'ask' => $c['ask_price'] === null ? null : (float)$c['ask_price'],
             'floor' => $c['floor_price'] === null ? null : (float)$c['floor_price'], 'status' => $c['status'], 'in_date' => $c['in_date'], 'sold_date' => $c['sold_date'],
-            'featured' => (bool)$c['featured'], 'inspection' => json_decode((string)$c['inspection'], true) ?: new stdClass(), 'logbook' => $c['logbook'], 'notes' => $c['notes'],
+            'featured' => (bool)$c['featured'], 'inspection' => json_decode((string)$c['inspection'], true) ?: new stdClass(), 'logbook' => $c['logbook'], 'notes' => $c['notes'], 'logbook_status' => $c['logbook_status'] ?? null, 'created_at' => $c['created_at'],
             'photos' => $photos[$id] ?? []];
-        if ($mgr) { $o['buy'] = $c['buy_price'] === null ? null : (float)$c['buy_price']; $o['costs'] = $costs[$id] ?? []; }
+        if ($mgr) { $o['buy'] = $c['buy_price'] === null ? null : (float)$c['buy_price']; $o['costs'] = $costs[$id] ?? [];
+            $o['logbook_no'] = $c['logbook_no'] ?? null; $o['logbook_date'] = $c['logbook_date'] ?? null; $o['logbook_office'] = $c['logbook_office'] ?? null;
+            $o['logbook_remarks'] = $c['logbook_remarks'] ?? null; $o['logbook_file'] = !empty($c['logbook_file']); }
         $outCars[] = $o;
     }
     $sales = array_map('cast_sale', rows('SELECT * FROM sales WHERE voided_at IS NULL ORDER BY COALESCE(date, DATE(created_at)) DESC, id DESC'));
@@ -114,7 +118,7 @@ function app_state(array $u): array {
     unset($s);
     $out = ['me' => $u, 'today' => today(), 'cars' => $outCars, 'sales' => $sales,
         'users' => array_map(fn($x) => ['id' => (int)$x['id'], 'name' => $x['name'], 'role' => $x['role'], 'active' => (bool)$x['active']], rows('SELECT id, name, role, active FROM users ORDER BY name')),
-        'settings' => public_settings(), 'cost_types' => COST_TYPES, 'expense_types' => EXPENSE_TYPES, 'pay_methods' => PAY_METHODS, 'sees_costs' => $mgr];
+        'settings' => public_settings(), 'logbook_status' => LOGBOOK_STATUS, 'cost_types' => COST_TYPES, 'expense_types' => EXPENSE_TYPES, 'pay_methods' => PAY_METHODS, 'sees_costs' => $mgr];
     if ($mgr) {
         $loans = rows('SELECT * FROM loans ORDER BY status = "active" DESC, COALESCE(date, DATE(created_at)) DESC, id DESC');
         $lp = payments_for('loan_id', array_column($loans, 'id'));
@@ -145,8 +149,10 @@ function load_seed(array $seed, string $seedDir, int $ownerId): array {
             $id = insert('cars', ['plate' => $c['plate'] ?: null, 'make' => $noModel ? null : ($c['make'] ?: null), 'model' => $noModel ? ($c['sheet_name'] ?: $c['make'] ?: 'Car') : $c['model'],
                 'body' => in_array($c['body'], BODIES, true) ? $c['body'] : 'sedan', 'fuel' => $c['fuel'], 'color' => $c['color'] ?? null,
                 'ask_price' => $c['ask'], 'floor_price' => null, 'status' => $c['status'], 'in_date' => $c['in_date'], 'inspection' => $insp ? json_encode($insp) : null,
-                'logbook' => $c['logbook'] ?? null, 'notes' => 'Loaded from the Car Details sheet' . ($c['sheet_name'] && $c['sheet_name'] !== $c['model'] ? ' (written there as "' . $c['sheet_name'] . '")' : '') . '.',
+                'logbook' => $c['logbook'] ?? null, 'logbook_status' => ($c['logbook'] ?? null) === 'present' ? 'with_us' : ($c['status'] === 'sold' ? null : 'not_received'), 'notes' => 'Loaded from the Car Details sheet' . ($c['sheet_name'] && $c['sheet_name'] !== $c['model'] ? ' (written there as "' . $c['sheet_name'] . '")' : '') . '.',
                 'created_by' => $ownerId]);
+            if (($c['logbook'] ?? null) === 'present' || $c['status'] !== 'sold')
+                insert('car_logbook_log', ['car_id' => $id, 'date' => $c['in_date'] ?? today(), 'status' => ($c['logbook'] ?? null) === 'present' ? 'with_us' : 'not_received', 'remarks' => 'From the Car Details sheet', 'user_id' => $ownerId]);
             $byPlate[$c['plate']] = ['id' => $id, 'c' => $c];
             $n['cars']++; if ($c['status'] !== 'sold') $n['stock']++;
             foreach ($c['photos'] ?? [] as $rel) {
