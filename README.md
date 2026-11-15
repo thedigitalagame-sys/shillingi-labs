@@ -9,7 +9,7 @@ By Shilingi Labs Tech Solutions.
 ## Stack
 
 - PHP 8.1+ (PDO MySQL, GD, EXIF), MySQL / MariaDB
-- Plain JavaScript single-page app (`public/app.js`), Chart.js
+- Modular plain-JavaScript single-page app (`public/admin/js/`), Chart.js
 - Runs on shared cPanel hosting
 
 ## Layout
@@ -18,7 +18,13 @@ By Shilingi Labs Tech Solutions.
 app/            private: config, API routes, business logic (not web-accessible)
   api/routes.php
   lib/          auth, db, photos, car-yard rules (gari.php), schema upgrades
-public/         document root: index.html, app.js, app.css, api/index.php, setup.php
+public/         document root
+  admin/        authenticated staff application and feature modules
+  api/          public API entry point (authentication enforced by routes)
+  shared/       modular styles, images and third-party browser assets
+  uploads/      uploaded car photos
+  index.html    lightweight entry point to the admin application
+  setup.php     one-time installation screen
 sql/schema.sql
 DEPLOY.md       step-by-step cPanel setup
 ```
@@ -41,4 +47,5 @@ Open http://127.0.0.1:8090/setup.php to create the owner account, then sign in a
 
 ## Deploying an update
 
-Upload the changed files in `app/` and `public/` over the live ones. Never overwrite `app/config.php` or `public/uploads/`. Bump the `?v=` numbers in `public/index.html` when `app.js` or `app.css` change.
+Upload the changed files in `app/` and `public/` over the live ones. Never overwrite `app/config.php` or `public/uploads/`. Bump the `?v=` number for a changed browser file in `public/admin/index.html`.
+# shillingi-labs
