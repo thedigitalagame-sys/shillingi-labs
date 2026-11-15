@@ -27,7 +27,11 @@ Every change is recorded in the activity log. M-Pesa codes can't be entered twic
 ```
 driveline-gari/          ← upload to your home directory, e.g. /home3/njiasmar/driveline-gari
   app/                   ← private: config, code and the Driveline data (NOT web-accessible)
-  public/                ← the subdomain's document root (photos go in public/uploads/)
+  public/                ← the subdomain's document root
+    admin/               ← authenticated staff application
+    api/                 ← API entry point
+    shared/              ← shared browser assets and styles
+    uploads/             ← car photos
   sql/schema.sql
 ```
 
@@ -61,7 +65,7 @@ Then **SSL/TLS Status → Run AutoSSL**. The system forces HTTPS.
 2. Enter the setup key, then the business name (pre-filled "Driveline Motors"), location, phone, and the owner's name, email and password.
 3. Leave **Load Driveline Motors** ticked and click **Create owner account**. Loading the photos takes up to a minute. It confirms *66 cars (23 in stock), 81 photos, 43 past sales and 12 logbook loans* and lists the points to check (below).
 4. **Delete `public/setup.php`** in File Manager. You can also delete `app/seed/`.
-5. Sign in. Under **Staff**, add the manager and sales people with a first password each.
+5. Sign in at `/admin/`. Under **Staff**, add the manager and sales people with a first password each.
 6. Under **Settings**, set the default credit interest (% a month), the minimum deposit and how many days a reservation is held. These start at 0%, 30% and 7 days.
 
 ## 6. Points to check from the spreadsheets

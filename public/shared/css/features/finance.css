@@ -1,0 +1,221 @@
+/* loan cards */
+.loan-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.loan-card .top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.loan-card .top b {
+  font-size: 15px;
+}
+.mini {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.mini div span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.mini div b {
+  font-size: 14px;
+}
+.steps {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.steps span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+  font-weight: 600;
+}
+.steps span i {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--line2);
+  font-style: normal;
+  font-size: 11px;
+}
+.steps span.done {
+  color: var(--good);
+}
+.steps span.done i {
+  background: var(--good);
+  color: #fff;
+}
+.steps span.cur {
+  color: var(--blue);
+}
+.steps span.cur i {
+  background: var(--blue);
+  color: #fff;
+}
+.steps em {
+  width: 26px;
+  height: 2px;
+  background: var(--line);
+  margin: 0 6px;
+}
+
+/* apply */
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+.check i {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 12px;
+}
+.check.ok i {
+  background: var(--good-bg);
+  color: var(--good);
+}
+.check.no i {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+.check small {
+  display: block;
+  color: var(--muted);
+}
+.big-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.results {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-height: 220px;
+  overflow: auto;
+  margin-top: 6px;
+}
+.results div {
+  padding: 8px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line2);
+}
+.results div:hover {
+  background: #f5f8fd;
+}
+.results div:last-child {
+  border-bottom: none;
+}
+.gl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.gl input {
+  width: 120px;
+  text-align: right;
+}
+.gl button {
+  border: none;
+  background: none;
+  color: var(--bad);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--blue);
+}
+
+/* M-Pesa phone */
+.phone {
+  background: #101418;
+  border-radius: 26px;
+  padding: 14px;
+  width: 260px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.phone .scr {
+  background: #f4f6f8;
+  border-radius: 16px;
+  padding: 18px 16px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+}
+.phone .scr b {
+  font-size: 15px;
+}
+.spin {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #cfe8d3;
+  border-top-color: var(--mpesa);
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: sp 0.9s linear infinite;
+}
+@keyframes sp {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.pin {
+  letter-spacing: 0.5em;
+  font-size: 20px;
+  font-weight: 800;
+}
+.tick {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--mpesa);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  font-size: 24px;
+  font-weight: 800;
+}

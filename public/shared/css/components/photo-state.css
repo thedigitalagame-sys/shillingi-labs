@@ -1,0 +1,24 @@
+/* photo loading state */
+.gal .main.loading::after {
+  content: 'Loading photo…';
+  position: absolute;
+  inset: auto 0 50% 0;
+  text-align: center;
+  color: #c9d2df;
+  font-size: 13px;
+}
+.gal .main.loading img {
+  opacity: 0.35;
+}
+.gal .main.failed::after {
+  content: 'This photo did not load. Tap ⤢ Full size or try again.';
+  position: absolute;
+  inset: auto 0 50% 0;
+  text-align: center;
+  color: #fca5a5;
+  font-size: 13px;
+}
+.thumbs img,
+.thumb img {
+  background: linear-gradient(90deg, #e5eaf1, #f3f6fa, #e5eaf1);
+}
